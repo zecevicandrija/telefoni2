@@ -109,6 +109,11 @@ export default function Pocetna() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const { scrollYProgress } = useScroll();
 
+  // Parallax transforms
+  const parallaxY = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
+  const parallaxY2 = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
+  const parallaxY3 = useTransform(scrollYProgress, [0, 1], ['0%', '150%']);
+
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 2000);
     return () => clearTimeout(timer);
@@ -122,8 +127,6 @@ export default function Pocetna() {
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
-
-  const parallaxY = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
   const testimonials = [
     {
@@ -429,11 +432,11 @@ export default function Pocetna() {
           />
           <motion.div
             className={styles.floatingShape}
-            style={{ y: useTransform(scrollYProgress, [0, 1], ['0%', '50%']) }}
+            style={{ y: parallaxY2 }}
           />
           <motion.div
             className={styles.floatingShape}
-            style={{ y: useTransform(scrollYProgress, [0, 1], ['0%', '150%']) }}
+            style={{ y: parallaxY3 }}
           />
         </div>
       </section>
