@@ -1,21 +1,23 @@
 /* ===== Apple Style How It Works ===== */
 .howItWorksWrapper {
   position: relative;
-  /* Height = Header + (4 steps * viewport height) */
-  height: 500vh;
+  height: 400vh; /* Optimalna visina za 4 step-a */
   background: linear-gradient(180deg, rgba(10, 10, 30, 0) 0%, rgba(10, 10, 30, 0.5) 50%, rgba(10, 10, 30, 0) 100%);
+  z-index: 1;
 }
 
 .howItWorksStickyContainer {
   position: sticky;
   top: 0;
   height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 2rem;
   overflow: hidden;
+  will-change: transform; /* GPU akceleracija */
 }
 
 .howItWorksHeader {
@@ -202,7 +204,7 @@
 /* ===== Responsive Design ===== */
 @media (max-width: 768px) {
   .howItWorksWrapper {
-    height: 400vh;
+    height: 350vh;
   }
 
   .howItWorksHeader {
@@ -255,7 +257,7 @@
 
 @media (max-width: 480px) {
   .howItWorksWrapper {
-    height: 350vh;
+    height: 300vh;
   }
 
   .howItWorksHeader {
