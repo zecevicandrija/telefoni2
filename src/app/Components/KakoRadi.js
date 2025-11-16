@@ -9,7 +9,6 @@ import styles from './KakoRadi.module.css';
 export default function KakoRadi() {
   const containerRef = useRef(null);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [currentStep, setCurrentStep] = useState(0);
 
   const howItWorks = [
     {
@@ -47,46 +46,91 @@ export default function KakoRadi() {
       if (!containerRef.current) return;
 
       const container = containerRef.current;
-      const { top, height } = container.getBoundingClientRect();
+      const rect = container.getBoundingClientRect();
       const windowHeight = window.innerHeight;
+      const containerHeight = container.offsetHeight;
 
-      // Kada element uđe u viewport
-      if (top <= 0 && top + height >= windowHeight) {
-        // Izračunaj progress od 0 do 1
-        const scrolled = Math.abs(top);
-        const totalScroll = height - windowHeight;
-        const progress = Math.min(Math.max(scrolled / totalScroll, 0), 1);
+      // Progress računamo dok sticky kontejner scrolluje kroz wrapper
+      const scrollStart = rect.top;
+      const scrollEnd = rect.bottom - windowHeight;
 
-        setScrollProgress(progress);
-
-        // Odredi koji step je trenutno aktivan
-        const stepIndex = Math.floor(progress * howItWorks.length);
-        setCurrentStep(Math.min(stepIndex, howItWorks.length - 1));
-      } else if (top > 0) {
+      if (scrollStart <= 0 && scrollEnd >= 0) {
+        // Wrapper je u view-u, računaj progress
+        const totalScrollDistance = containerHeight - windowHeight;
+        const currentScroll = Math.abs(scrollStart);
+        const progress = currentScroll / totalScrollDistance;
+        setScrollProgress(Math.min(Math.max(progress, 0), 1));
+      } else if (scrollStart > 0) {
+        // Pre nego što wrapper uđe u view
         setScrollProgress(0);
-        setCurrentStep(0);
       } else {
+        // Nakon što wrapper izađe iz view-a
         setScrollProgress(1);
-        setCurrentStep(howItWorks.length - 1);
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+    handleScroll(); // Pozovi odmah za inicijalizaciju
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [howItWorks.length]);
+  }, []);
+
+  // Smooth easing funkcija
+  const easeInOut = (t) => {
+    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+  };
+
+  // Funkcija za izračunavanje vidljivosti step-a sa smoothing efekatom
+  const getStepVisibility = (index) => {
+    const numSteps = howItWorks.length;
+    const stepDuration = 1 / numSteps; // 0.25 za 4 step-a
+
+    // Start i end za svaki step sa overlap-om
+    const stepStart = index * stepDuration;
+    const stepEnd = (index + 1) * stepDuration;
+
+    // Transition zone - 15% na početku i kraju svakog step-a
+    const transitionZone = stepDuration * 0.15;
+
+    let visibility = 0;
+
+    if (scrollProgress < stepStart) {
+      // Pre step-a
+      visibility = 0;
+    } else if (scrollProgress >= stepStart && scrollProgress < stepStart + transitionZone) {
+      // Fade in faza
+      const fadeInProgress = (scrollProgress - stepStart) / transitionZone;
+      visibility = easeInOut(fadeInProgress);
+    } else if (scrollProgress >= stepStart + transitionZone && scrollProgress < stepEnd - transitionZone) {
+      // Potpuno vidljiv
+      visibility = 1;
+    } else if (scrollProgress >= stepEnd - transitionZone && scrollProgress < stepEnd) {
+      // Fade out faza
+      const fadeOutProgress = (scrollProgress - (stepEnd - transitionZone)) / transitionZone;
+      visibility = easeInOut(1 - fadeOutProgress);
+    } else {
+      // Posle step-a
+      visibility = 0;
+    }
+
+    return visibility;
+  };
+
+  // Odredi trenutni step za indikatore
+  const currentStep = Math.min(
+    Math.floor(scrollProgress * howItWorks.length),
+    howItWorks.length - 1
+  );
 
   return (
     <section ref={containerRef} className={styles.howItWorksWrapper} id="kako-radi">
       <div className={styles.howItWorksStickyContainer}>
-        {/* Header */}
+        {/* Header - fade out dok skroluješ */}
         <motion.div
           className={styles.howItWorksHeader}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          style={{
+            opacity: Math.max(0, 1 - scrollProgress * 2)
+          }}
         >
           <h2 className={styles.sectionTitle}>Kako radi?</h2>
           <p className={styles.sectionSubtitle}>Jednostavan proces u 4 koraka</p>
@@ -107,36 +151,13 @@ export default function KakoRadi() {
           {/* Steps Cards */}
           <div className={styles.stepsCardsContainer}>
             {howItWorks.map((step, index) => {
-              // Kalkulacija za svaki step
-              const stepRange = 1 / howItWorks.length; // 0.25 za 4 step-a
-              const stepStart = index * stepRange;
-              const stepEnd = (index + 1) * stepRange;
-              const stepMiddle = (stepStart + stepEnd) / 2;
+              const visibility = getStepVisibility(index);
 
-              // Izračunaj koliko je step aktivan (0 do 1)
-              let stepProgress = 0;
-
-              if (scrollProgress >= stepStart && scrollProgress <= stepEnd) {
-                // Step je u svom rangu
-                const localProgress = (scrollProgress - stepStart) / stepRange;
-
-                // Fade in u prvoj polovini, fade out u drugoj
-                if (localProgress <= 0.5) {
-                  stepProgress = localProgress * 2; // 0 -> 1
-                } else {
-                  stepProgress = (1 - localProgress) * 2; // 1 -> 0
-                }
-              } else if (scrollProgress < stepStart) {
-                // Pre nego što step počne
-                stepProgress = 0;
-              } else {
-                // Posle što step završi
-                stepProgress = 0;
-              }
-
-              const opacity = stepProgress;
-              const y = (1 - stepProgress) * 30; // Pomera se od 30px do 0
-              const scale = 0.95 + (stepProgress * 0.05); // Od 0.95 do 1
+              // Animiraj opacity, position, i scale baziran na vidljivosti
+              const opacity = visibility;
+              const y = (1 - visibility) * 80; // 80px pomeranje za dramatičniji efekat
+              const scale = 0.85 + (visibility * 0.15); // Od 0.85 do 1.0
+              const blur = (1 - visibility) * 20; // Jači blur efekat
 
               return (
                 <div
@@ -145,7 +166,8 @@ export default function KakoRadi() {
                   style={{
                     opacity,
                     transform: `translate(-50%, calc(-50% + ${y}px)) scale(${scale})`,
-                    pointerEvents: stepProgress > 0.3 ? 'auto' : 'none',
+                    filter: `blur(${blur}px)`,
+                    pointerEvents: visibility > 0.5 ? 'auto' : 'none',
                   }}
                 >
                   <div className={styles.stepCardInner}>
@@ -174,7 +196,7 @@ export default function KakoRadi() {
                       className={styles.stepGlow}
                       style={{
                         background: step.color,
-                        opacity: stepProgress * 0.3
+                        opacity: visibility * 0.3
                       }}
                     />
                   </div>
@@ -191,7 +213,8 @@ export default function KakoRadi() {
                 className={styles.stepIndicator}
                 style={{
                   opacity: currentStep === index ? 1 : 0.3,
-                  transform: currentStep === index ? 'scale(1.2)' : 'scale(1)',
+                  transform: currentStep === index ? 'scale(1.3)' : 'scale(1)',
+                  background: currentStep === index ? howItWorks[index].color : '#667eea',
                 }}
               />
             ))}
