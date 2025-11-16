@@ -116,10 +116,7 @@ export default function Pocetna() {
 
   // How It Works scroll tracking
   const howItWorksRef = useRef(null);
-  const { scrollYProgress: howItWorksProgress } = useScroll({
-    target: howItWorksRef,
-    offset: ["start start", "end end"]
-  });
+  const [howItWorksInView, setHowItWorksInView] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 2000);
@@ -133,6 +130,40 @@ export default function Pocetna() {
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // Track scroll progress through How It Works section
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!howItWorksRef.current) return;
+
+      const element = howItWorksRef.current;
+      const rect = element.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const elementHeight = element.offsetHeight;
+
+      // Calculate progress (0 to 1) as user scrolls through the section
+      const start = rect.top;
+      const end = rect.bottom - windowHeight;
+
+      let progress = 0;
+      if (start <= 0 && end >= 0) {
+        // Element is in view
+        progress = Math.abs(start) / (elementHeight - windowHeight);
+        progress = Math.max(0, Math.min(1, progress));
+      } else if (start > 0) {
+        progress = 0;
+      } else {
+        progress = 1;
+      }
+
+      setHowItWorksInView(progress);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const testimonials = [
@@ -496,10 +527,11 @@ export default function Pocetna() {
           <div className={styles.howItWorksStickyContent}>
             {/* Progress Line */}
             <div className={styles.progressLineContainer}>
-              <motion.div
+              <div
                 className={styles.progressLine}
                 style={{
-                  scaleY: howItWorksProgress
+                  transform: `scaleY(${howItWorksInView})`,
+                  transformOrigin: 'top'
                 }}
               />
             </div>
@@ -510,8 +542,23 @@ export default function Pocetna() {
                 const stepProgress = index / (howItWorks.length - 1);
                 const nextStepProgress = (index + 1) / (howItWorks.length - 1);
 
-                const opacity = useTransform(
-                  howItWorksProgress,
+                // Calculate interpolated values manually
+                const interpolate = (progress, inputRange, outputRange) => {
+                  for (let i = 0; i < inputRange.length - 1; i++) {
+                    if (progress >= inputRange[i] && progress <= inputRange[i + 1]) {
+                      const range = inputRange[i + 1] - inputRange[i];
+                      const percent = (progress - inputRange[i]) / range;
+                      const outputStart = outputRange[i];
+                      const outputEnd = outputRange[i + 1];
+                      return outputStart + (outputEnd - outputStart) * percent;
+                    }
+                  }
+                  if (progress < inputRange[0]) return outputRange[0];
+                  return outputRange[outputRange.length - 1];
+                };
+
+                const opacity = interpolate(
+                  howItWorksInView,
                   [
                     Math.max(0, stepProgress - 0.15),
                     stepProgress,
@@ -521,8 +568,8 @@ export default function Pocetna() {
                   [0, 1, 1, 0]
                 );
 
-                const y = useTransform(
-                  howItWorksProgress,
+                const y = interpolate(
+                  howItWorksInView,
                   [
                     Math.max(0, stepProgress - 0.15),
                     stepProgress,
@@ -532,8 +579,8 @@ export default function Pocetna() {
                   [50, 0, 0, -50]
                 );
 
-                const scale = useTransform(
-                  howItWorksProgress,
+                const scale = interpolate(
+                  howItWorksInView,
                   [
                     Math.max(0, stepProgress - 0.15),
                     stepProgress,
@@ -544,31 +591,36 @@ export default function Pocetna() {
                 );
 
                 return (
-                  <motion.div
+                  <div
                     key={index}
                     className={styles.stepCardApple}
                     style={{
                       opacity,
-                      y,
-                      scale
+                      transform: `translate(-50%, calc(-50% + ${y}px)) scale(${scale})`,
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      width: '100%',
+                      maxWidth: '600px',
+                      willChange: 'transform, opacity'
                     }}
                   >
                     <div className={styles.stepCardInner}>
                       {/* Step Number Badge */}
-                      <motion.div
+                      <div
                         className={styles.stepBadge}
                         style={{ background: step.color }}
                       >
                         {step.step}
-                      </motion.div>
+                      </div>
 
                       {/* Icon */}
-                      <motion.div
+                      <div
                         className={styles.stepIconLarge}
                         style={{ color: step.color }}
                       >
                         {step.icon}
-                      </motion.div>
+                      </div>
 
                       {/* Content */}
                       <h3 className={styles.stepTitleLarge}>{step.title}</h3>
@@ -580,7 +632,7 @@ export default function Pocetna() {
                         style={{ background: step.color }}
                       />
                     </div>
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>
