@@ -501,6 +501,175 @@
   transform-origin: left;
 }
 
+/* ===== Apple Style How It Works ===== */
+.howItWorksWrapper {
+  position: relative;
+  /* Height = Header + (4 steps * viewport height) */
+  height: 500vh;
+  background: linear-gradient(180deg, rgba(10, 10, 30, 0) 0%, rgba(10, 10, 30, 0.5) 50%, rgba(10, 10, 30, 0) 100%);
+}
+
+.howItWorksStickyContainer {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.howItWorksHeader {
+  position: absolute;
+  top: 8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 10;
+  width: 100%;
+  max-width: 800px;
+  padding: 0 2rem;
+}
+
+.howItWorksStickyContent {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  height: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Progress Line */
+.progressLineContainer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 80%;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.progressLine {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  transform-origin: top;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+}
+
+/* Step Cards Container */
+.stepsCardsContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Apple Style Step Card */
+.stepCardApple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 600px;
+  will-change: transform, opacity;
+}
+
+.stepCardInner {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 32px;
+  padding: 4rem 3rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Step Badge */
+.stepBadge {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 800;
+  font-family: var(--font-poppins), sans-serif;
+  color: #ffffff;
+  margin: 0 auto 2rem;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.4),
+    0 0 0 4px rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 2;
+}
+
+/* Large Icon */
+.stepIconLarge {
+  font-size: 6rem;
+  margin-bottom: 2rem;
+  display: inline-block;
+  filter: drop-shadow(0 10px 30px currentColor);
+  opacity: 0.9;
+  position: relative;
+  z-index: 2;
+}
+
+/* Large Title */
+.stepTitleLarge {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  font-family: var(--font-poppins), sans-serif;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  position: relative;
+  z-index: 2;
+}
+
+/* Large Description */
+.stepDescriptionLarge {
+  color: #b8c1ec;
+  line-height: 1.8;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* Decorative Glow */
+.stepGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.15;
+  filter: blur(80px);
+  z-index: 1;
+  pointer-events: none;
+}
+
 /* ===== Testimonials Section ===== */
 .testimonials {
   padding: 8rem 2rem;
@@ -1057,6 +1226,50 @@
     padding: 2rem 1.5rem;
   }
 
+  /* Apple Style How It Works - Mobile */
+  .howItWorksWrapper {
+    height: 400vh;
+  }
+
+  .howItWorksHeader {
+    top: 6rem;
+  }
+
+  .howItWorksStickyContent {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+
+  .stepCardApple {
+    max-width: 100%;
+  }
+
+  .stepCardInner {
+    padding: 3rem 2rem;
+  }
+
+  .stepBadge {
+    width: 70px;
+    height: 70px;
+    font-size: 2rem;
+  }
+
+  .stepIconLarge {
+    font-size: 4.5rem;
+  }
+
+  .stepTitleLarge {
+    font-size: 2rem;
+  }
+
+  .stepDescriptionLarge {
+    font-size: 1.1rem;
+  }
+
+  .progressLineContainer {
+    height: 70%;
+  }
+
   .footerContent {
     grid-template-columns: 1fr;
     gap: 2.5rem;
@@ -1111,6 +1324,42 @@
 
   .floatingBadge {
     display: none;
+  }
+
+  /* Apple Style How It Works - Small Mobile */
+  .howItWorksWrapper {
+    height: 350vh;
+  }
+
+  .howItWorksHeader {
+    top: 5rem;
+  }
+
+  .stepCardInner {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .stepBadge {
+    width: 60px;
+    height: 60px;
+    font-size: 1.8rem;
+  }
+
+  .stepIconLarge {
+    font-size: 3.5rem;
+  }
+
+  .stepTitleLarge {
+    font-size: 1.8rem;
+  }
+
+  .stepDescriptionLarge {
+    font-size: 1rem;
+  }
+
+  .progressLineContainer {
+    width: 3px;
+    height: 60%;
   }
 
   .loaderIcon {

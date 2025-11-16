@@ -114,6 +114,13 @@ export default function Pocetna() {
   const parallaxY2 = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
   const parallaxY3 = useTransform(scrollYProgress, [0, 1], ['0%', '150%']);
 
+  // How It Works scroll tracking
+  const howItWorksRef = useRef(null);
+  const { scrollYProgress: howItWorksProgress } = useScroll({
+    target: howItWorksRef,
+    offset: ["start start", "end end"]
+  });
+
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 2000);
     return () => clearTimeout(timer);
@@ -470,59 +477,114 @@ export default function Pocetna() {
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className={styles.howItWorks} id="kako-radi">
-        <motion.div
-          className={styles.sectionHeader}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className={styles.sectionTitle}>Kako radi?</h2>
-          <p className={styles.sectionSubtitle}>Jednostavan proces u 4 koraka</p>
-        </motion.div>
+      {/* How It Works Section - Apple Style Scroll */}
+      <section ref={howItWorksRef} className={styles.howItWorksWrapper} id="kako-radi">
+        <div className={styles.howItWorksStickyContainer}>
+          {/* Header */}
+          <motion.div
+            className={styles.howItWorksHeader}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className={styles.sectionTitle}>Kako radi?</h2>
+            <p className={styles.sectionSubtitle}>Jednostavan proces u 4 koraka</p>
+          </motion.div>
 
-        <div className={styles.stepsContainer}>
-          {howItWorks.map((step, index) => (
-            <motion.div
-              key={index}
-              className={styles.stepCard}
-              initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: index * 0.15 }}
-              whileHover={{ y: -15, scale: 1.03 }}
-            >
+          {/* Sticky Content */}
+          <div className={styles.howItWorksStickyContent}>
+            {/* Progress Line */}
+            <div className={styles.progressLineContainer}>
               <motion.div
-                className={styles.stepNumber}
-                style={{ background: step.color }}
-                whileHover={{ scale: 1.2, rotate: 360 }}
-                transition={{ duration: 0.6 }}
-              >
-                {step.step}
-              </motion.div>
-              <motion.div
-                className={styles.stepIcon}
-                style={{ color: step.color }}
-                whileHover={{ scale: 1.3, rotate: 15 }}
-              >
-                {step.icon}
-              </motion.div>
-              <h3 className={styles.stepTitle}>{step.title}</h3>
-              <p className={styles.stepDescription}>{step.description}</p>
+                className={styles.progressLine}
+                style={{
+                  scaleY: howItWorksProgress
+                }}
+              />
+            </div>
 
-              {index < howItWorks.length - 1 && (
-                <motion.div
-                  className={styles.stepConnector}
-                  initial={{ scaleX: 0 }}
-                  whileInView={{ scaleX: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: index * 0.15 + 0.3 }}
-                />
-              )}
-            </motion.div>
-          ))}
+            {/* Steps Cards */}
+            <div className={styles.stepsCardsContainer}>
+              {howItWorks.map((step, index) => {
+                const stepProgress = index / (howItWorks.length - 1);
+                const nextStepProgress = (index + 1) / (howItWorks.length - 1);
+
+                const opacity = useTransform(
+                  howItWorksProgress,
+                  [
+                    Math.max(0, stepProgress - 0.15),
+                    stepProgress,
+                    nextStepProgress,
+                    Math.min(1, nextStepProgress + 0.15)
+                  ],
+                  [0, 1, 1, 0]
+                );
+
+                const y = useTransform(
+                  howItWorksProgress,
+                  [
+                    Math.max(0, stepProgress - 0.15),
+                    stepProgress,
+                    nextStepProgress,
+                    Math.min(1, nextStepProgress + 0.15)
+                  ],
+                  [50, 0, 0, -50]
+                );
+
+                const scale = useTransform(
+                  howItWorksProgress,
+                  [
+                    Math.max(0, stepProgress - 0.15),
+                    stepProgress,
+                    nextStepProgress,
+                    Math.min(1, nextStepProgress + 0.15)
+                  ],
+                  [0.9, 1, 1, 0.9]
+                );
+
+                return (
+                  <motion.div
+                    key={index}
+                    className={styles.stepCardApple}
+                    style={{
+                      opacity,
+                      y,
+                      scale
+                    }}
+                  >
+                    <div className={styles.stepCardInner}>
+                      {/* Step Number Badge */}
+                      <motion.div
+                        className={styles.stepBadge}
+                        style={{ background: step.color }}
+                      >
+                        {step.step}
+                      </motion.div>
+
+                      {/* Icon */}
+                      <motion.div
+                        className={styles.stepIconLarge}
+                        style={{ color: step.color }}
+                      >
+                        {step.icon}
+                      </motion.div>
+
+                      {/* Content */}
+                      <h3 className={styles.stepTitleLarge}>{step.title}</h3>
+                      <p className={styles.stepDescriptionLarge}>{step.description}</p>
+
+                      {/* Decorative Glow */}
+                      <div
+                        className={styles.stepGlow}
+                        style={{ background: step.color }}
+                      />
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </section>
 
