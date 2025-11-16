@@ -544,16 +544,26 @@ export default function Pocetna() {
 
                 // Calculate interpolated values manually
                 const interpolate = (progress, inputRange, outputRange) => {
+                  // Clamp progress to valid range
+                  const clampedProgress = Math.max(0, Math.min(1, progress));
+
                   for (let i = 0; i < inputRange.length - 1; i++) {
-                    if (progress >= inputRange[i] && progress <= inputRange[i + 1]) {
+                    if (clampedProgress >= inputRange[i] && clampedProgress <= inputRange[i + 1]) {
                       const range = inputRange[i + 1] - inputRange[i];
-                      const percent = (progress - inputRange[i]) / range;
+
+                      // Handle division by zero when range is 0
+                      if (range === 0) {
+                        return outputRange[i];
+                      }
+
+                      const percent = (clampedProgress - inputRange[i]) / range;
                       const outputStart = outputRange[i];
                       const outputEnd = outputRange[i + 1];
                       return outputStart + (outputEnd - outputStart) * percent;
                     }
                   }
-                  if (progress < inputRange[0]) return outputRange[0];
+
+                  if (clampedProgress < inputRange[0]) return outputRange[0];
                   return outputRange[outputRange.length - 1];
                 };
 
