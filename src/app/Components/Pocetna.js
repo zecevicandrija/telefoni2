@@ -1,252 +1,854 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import {
+  FiShoppingCart,
+  FiDollarSign,
+  FiShield,
+  FiTrendingUp,
+  FiClock,
+  FiPackage,
+  FiCheckCircle,
+  FiStar,
+  FiAward,
+  FiThumbsUp,
+  FiCreditCard,
+  FiRefreshCw,
+  FiTruck
+} from 'react-icons/fi';
+import {
+  IoMdPhonePortrait,
+  IoMdCheckmarkCircle,
+  IoMdStar
+} from 'react-icons/io';
+import {
+  BsLightningChargeFill,
+  BsShieldCheck,
+  BsBoxSeam,
+  BsCashStack
+} from 'react-icons/bs';
+import { HiDevicePhoneMobile } from 'react-icons/hi2';
+import Navbar from './Navbar';
 import styles from './Pocetna.module.css';
 
-export default function Pocetna() {
-  const [isVisible, setIsVisible] = useState(false);
+// Loading Component
+function Loader() {
+  return (
+    <motion.div
+      className={styles.loader}
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.div
+        className={styles.loaderContent}
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+      >
+        <motion.div
+          className={styles.loaderIcon}
+          animate={{
+            rotate: 360,
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            rotate: { duration: 2, repeat: Infinity, ease: 'linear' },
+            scale: { duration: 1, repeat: Infinity, ease: 'easeInOut' },
+          }}
+        >
+          <IoMdPhonePortrait />
+        </motion.div>
+        <motion.h2
+          className={styles.loaderText}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+        >
+          tehnoKrug
+        </motion.h2>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// Animated Counter Component
+function AnimatedCounter({ end, duration = 2, suffix = '' }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
 
   useEffect(() => {
-    setIsVisible(true);
+    if (!isInView) return;
+
+    let startTime;
+    let animationFrame;
+
+    const animate = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const progress = (timestamp - startTime) / (duration * 1000);
+
+      if (progress < 1) {
+        setCount(Math.floor(end * progress));
+        animationFrame = requestAnimationFrame(animate);
+      } else {
+        setCount(end);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [isInView, end, duration]);
+
+  return <span ref={ref}>{count}{suffix}</span>;
+}
+
+export default function Pocetna() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const { scrollYProgress } = useScroll();
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 2000);
+    return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  const parallaxY = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
   const testimonials = [
     {
       name: "Marko Petrović",
+      role: "Klijent",
       rating: 5,
-      comment: "Odličan servis! Telefon stigao za 24h, u perfektnom stanju. Preporučujem!",
-      image: "👨‍💼"
+      comment: "Odličan servis! Telefon stigao za 24h, u perfektnom stanju. Garancija od 12 meseci je ono što me je ubedilo. Preporučujem!",
+      avatar: "https://i.pravatar.cc/150?img=12",
+      date: "Pre 2 dana"
     },
     {
       name: "Ana Jovanović",
+      role: "Klijent",
       rating: 5,
-      comment: "Prodala sam telefon brzo i jednostavno. Isplata odmah nakon provere. Top!",
-      image: "👩‍💼"
+      comment: "Prodala sam telefon brzo i jednostavno. Isplata odmah nakon provere. Profesionalna ekipa i fer cene. Top iskustvo!",
+      avatar: "https://i.pravatar.cc/150?img=5",
+      date: "Pre nedelju dana"
     },
     {
       name: "Stefan Nikolić",
+      role: "Klijent",
       rating: 5,
-      comment: "Najbolji odnos cene i kvaliteta. Garancija od 12 meseci je odlična.",
-      image: "👨‍🎓"
+      comment: "Najbolji odnos cene i kvaliteta. Telefon prošao sve testove, radi besprekorno. Garancija od 12 meseci daje osećaj sigurnosti.",
+      avatar: "https://i.pravatar.cc/150?img=33",
+      date: "Pre 3 dana"
     },
     {
       name: "Jelena Đorđević",
+      role: "Klijent",
       rating: 5,
-      comment: "Profesionalna usluga, brza dostava i odlična komunikacija!",
-      image: "👩‍💻"
+      comment: "Profesionalna usluga, brza dostava i odlična komunikacija! Kupila sam iPhone 13 i prezadovoljna sam. Sve pohvale!",
+      avatar: "https://i.pravatar.cc/150?img=9",
+      date: "Pre 5 dana"
+    },
+    {
+      name: "Nikola Jovanović",
+      role: "Klijent",
+      rating: 5,
+      comment: "Otkup telefona je bio neverovatno brz. Procenili cenu odmah, poslao telefon i dobio pare isti dan. Vrhunski!",
+      avatar: "https://i.pravatar.cc/150?img=51",
+      date: "Pre 4 dana"
+    },
+    {
+      name: "Milica Stanković",
+      role: "Klijent",
+      rating: 5,
+      comment: "Kupovina na rate uz Banca Intesa je bila idealno rešenje za mene. Telefon stigao brzo, sve uredno upakovano!",
+      avatar: "https://i.pravatar.cc/150?img=23",
+      date: "Pre nedelju dana"
     }
+  ];
+
+  const stats = [
+    { number: 15000, suffix: '+', label: 'Prodatih telefona', icon: <IoMdPhonePortrait /> },
+    { number: 98, suffix: '%', label: 'Zadovoljnih klijenata', icon: <FiThumbsUp /> },
+    { number: 12, suffix: 'mес', label: 'Garancija', icon: <BsShieldCheck /> },
+    { number: 24, suffix: 'h', label: 'Dostava', icon: <FiTruck /> },
   ];
 
   const whyBuyReasons = [
     {
-      icon: "💳",
+      icon: <FiCreditCard />,
       title: "Plaćanje na rate",
-      description: "Možeš da platiš na 3 do 12 rata ukoliko si Banca Intesa korisnik"
+      description: "Možeš da platiš na 3 do 12 rata ukoliko si Banca Intesa korisnik",
+      color: "#667eea"
     },
     {
-      icon: "🛡️",
+      icon: <BsShieldCheck />,
       title: "Garancija 12 meseci",
-      description: "Garantujemo 12 meseci na ceo uređaj"
+      description: "Garantujemo 12 meseci na ceo uređaj sa punom podrškom",
+      color: "#f093fb"
     },
     {
-      icon: "↩️",
+      icon: <FiRefreshCw />,
       title: "Povrat novca u 14 dana",
-      description: "Vraćamo novac u 14 dana ukoliko se predomisliš"
+      description: "Vraćamo novac u 14 dana ukoliko se predomisliš, bez pitanja",
+      color: "#4facfe"
     },
     {
-      icon: "✓",
+      icon: <IoMdCheckmarkCircle />,
       title: "Proveren kvalitet",
-      description: "Detaljno provereni telefoni kroz 90 testova"
+      description: "Detaljno provereni telefoni kroz 90+ profesionalnih testova",
+      color: "#43e97b"
     },
     {
-      icon: "🚚",
+      icon: <FiTruck />,
       title: "Besplatna dostava",
-      description: "Danas-za-sutra, besplatna i osigurana dostava"
+      description: "Danas-za-sutra, besplatna i osigurana dostava širom Srbije",
+      color: "#fa709a"
+    },
+    {
+      icon: <FiAward />,
+      title: "Originalna oprema",
+      description: "Svi telefoni dolaze sa originalnim punjačem i pakovanjem",
+      color: "#feca57"
     }
   ];
 
   const whySellReasons = [
     {
-      icon: "💰",
+      icon: <BsLightningChargeFill />,
       title: "Saznaj odmah cenu",
-      description: "Saznaj odmah cenu tvog uređaja bez čekanja"
+      description: "Trenutna procena vrednosti tvog telefona bez čekanja",
+      color: "#f093fb"
     },
     {
-      icon: "⚡",
+      icon: <BsCashStack />,
       title: "Isplata isti dan",
-      description: "Isplaćujemo novac isti dan nakon provere"
+      description: "Isplaćujemo novac isti dan nakon provere uređaja",
+      color: "#43e97b"
     },
     {
-      icon: "🤝",
+      icon: <FiShield />,
       title: "Garantovana isplata",
-      description: "Garantovana isplata dogovorene cene*"
+      description: "Garantovana isplata dogovorene cene ako uređaj odgovara opisu*",
+      color: "#667eea"
     },
     {
-      icon: "📦",
+      icon: <BsBoxSeam />,
       title: "Besplatno slanje",
-      description: "Brzo, besplatno, osigurano slanje ili ti dođi do nas"
+      description: "Brzo, besplatno, osigurano slanje ili dođi kod nas",
+      color: "#4facfe"
     }
   ];
 
+  const howItWorks = [
+    {
+      step: 1,
+      icon: <HiDevicePhoneMobile />,
+      title: "Izaberi telefon",
+      description: "Pretraži našu ponudu i pronađi savršen telefon za sebe",
+      color: "#667eea"
+    },
+    {
+      step: 2,
+      icon: <FiCheckCircle />,
+      title: "Proveri detalje",
+      description: "Pogledaj sve specifikacije, slike i stanje uređaja",
+      color: "#f093fb"
+    },
+    {
+      step: 3,
+      icon: <FiShoppingCart />,
+      title: "Naruči online",
+      description: "Jednostavna kupovina u par klikova ili pozovi nas",
+      color: "#43e97b"
+    },
+    {
+      step: 4,
+      icon: <FiPackage />,
+      title: "Primi dostavu",
+      description: "Besplatna dostava danas-za-sutra direktno na adresu",
+      color: "#4facfe"
+    }
+  ];
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <div className={styles.container}>
+      <Navbar />
+
+      {/* Mouse follower effect */}
+      <motion.div
+        className={styles.mouseFollower}
+        animate={{
+          x: mousePosition.x - 250,
+          y: mousePosition.y - 250,
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 50,
+          damping: 15
+        }}
+      />
+
       {/* Hero Section */}
-      <section className={`${styles.hero} ${isVisible ? styles.fadeIn : ''}`}>
+      <section className={styles.hero} id="kupi">
         <div className={styles.heroContent}>
-          <h1 className={styles.heroTitle}>
-            <span className={styles.gradientText}>tehnoKrug</span>
-          </h1>
-          <p className={styles.heroSubtitle}>
-            Tvoj pouzdan partner za kupovinu i prodaju telefona
-          </p>
+          <motion.div
+            className={styles.heroText}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <motion.span
+              className={styles.heroSubheading}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              Dobrodošli u budućnost kupovine telefona
+            </motion.span>
 
-          <div className={styles.heroButtons}>
-            <div className={styles.heroCard}>
-              <div className={styles.cardIcon}>📱</div>
-              <h3>Kupi telefon</h3>
-              <p>Pronađi savršen telefon po najboljoj ceni</p>
-              <button className={`${styles.btn} ${styles.btnPrimary}`}>
+            <motion.h1
+              className={styles.heroTitle}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              Najbolji <span className={styles.gradientText}>polovni telefoni</span> sa garancijom
+            </motion.h1>
+
+            <motion.p
+              className={styles.heroDescription}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              Proveren kvalitet, 12 meseci garancije, besplatna dostava i povrat novca u 14 dana.
+              Tvoj pouzdan partner za kupovinu i prodaju telefona u Srbiji.
+            </motion.p>
+
+            <motion.div
+              className={styles.heroButtons}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              <motion.button
+                className={`${styles.btn} ${styles.btnPrimary}`}
+                whileHover={{ scale: 1.05, boxShadow: "0 20px 60px rgba(102, 126, 234, 0.4)" }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <FiShoppingCart />
                 Pretraži telefone
-              </button>
-            </div>
+              </motion.button>
 
-            <div className={styles.heroCard}>
-              <div className={styles.cardIcon}>💵</div>
-              <h3>Prodaj telefon</h3>
-              <p>Prodaj svoj telefon brzo i sigurno</p>
-              <button className={`${styles.btn} ${styles.btnSecondary}`}>
-                Proceni cenu
-              </button>
-            </div>
-          </div>
+              <motion.button
+                className={`${styles.btn} ${styles.btnSecondary}`}
+                whileHover={{ scale: 1.05, boxShadow: "0 20px 60px rgba(240, 147, 251, 0.4)" }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <FiDollarSign />
+                Prodaj telefon
+              </motion.button>
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            className={styles.heroImage}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+          >
+            <motion.div
+              className={styles.phoneShowcase}
+              animate={{
+                y: [0, -20, 0],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              <div className={styles.phone3d}>
+                <div className={styles.phoneScreen}>
+                  <div className={styles.phoneNotch}></div>
+                  <div className={styles.phoneContent}>
+                    <motion.div
+                      className={styles.phoneLogo}
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    >
+                      <IoMdPhonePortrait />
+                    </motion.div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Floating badges */}
+            <motion.div
+              className={styles.floatingBadge}
+              style={{ top: '10%', right: '10%' }}
+              animate={{ y: [0, -10, 0], rotate: [0, 5, 0] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            >
+              <BsShieldCheck />
+              <span>12 meseci garancije</span>
+            </motion.div>
+
+            <motion.div
+              className={styles.floatingBadge}
+              style={{ bottom: '20%', left: '5%' }}
+              animate={{ y: [0, -15, 0], rotate: [0, -5, 0] }}
+              transition={{ duration: 4, repeat: Infinity, delay: 1 }}
+            >
+              <FiTruck />
+              <span>Besplatna dostava</span>
+            </motion.div>
+          </motion.div>
         </div>
 
+        {/* Background elements */}
         <div className={styles.heroBackground}>
-          <div className={styles.floatingShape}></div>
-          <div className={styles.floatingShape}></div>
-          <div className={styles.floatingShape}></div>
+          <motion.div
+            className={styles.floatingShape}
+            style={{ y: parallaxY }}
+          />
+          <motion.div
+            className={styles.floatingShape}
+            style={{ y: useTransform(scrollYProgress, [0, 1], ['0%', '50%']) }}
+          />
+          <motion.div
+            className={styles.floatingShape}
+            style={{ y: useTransform(scrollYProgress, [0, 1], ['0%', '150%']) }}
+          />
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className={styles.stats}>
+        <div className={styles.statsGrid}>
+          {stats.map((stat, index) => (
+            <motion.div
+              key={index}
+              className={styles.statCard}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              whileHover={{ y: -10, scale: 1.05 }}
+            >
+              <motion.div
+                className={styles.statIcon}
+                whileHover={{ rotate: 360, scale: 1.2 }}
+                transition={{ duration: 0.6 }}
+              >
+                {stat.icon}
+              </motion.div>
+              <div className={styles.statNumber}>
+                <AnimatedCounter end={stat.number} suffix={stat.suffix} />
+              </div>
+              <div className={styles.statLabel}>{stat.label}</div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className={styles.howItWorks} id="kako-radi">
+        <motion.div
+          className={styles.sectionHeader}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className={styles.sectionTitle}>Kako radi?</h2>
+          <p className={styles.sectionSubtitle}>Jednostavan proces u 4 koraka</p>
+        </motion.div>
+
+        <div className={styles.stepsContainer}>
+          {howItWorks.map((step, index) => (
+            <motion.div
+              key={index}
+              className={styles.stepCard}
+              initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: index * 0.15 }}
+              whileHover={{ y: -15, scale: 1.03 }}
+            >
+              <motion.div
+                className={styles.stepNumber}
+                style={{ background: step.color }}
+                whileHover={{ scale: 1.2, rotate: 360 }}
+                transition={{ duration: 0.6 }}
+              >
+                {step.step}
+              </motion.div>
+              <motion.div
+                className={styles.stepIcon}
+                style={{ color: step.color }}
+                whileHover={{ scale: 1.3, rotate: 15 }}
+              >
+                {step.icon}
+              </motion.div>
+              <h3 className={styles.stepTitle}>{step.title}</h3>
+              <p className={styles.stepDescription}>{step.description}</p>
+
+              {index < howItWorks.length - 1 && (
+                <motion.div
+                  className={styles.stepConnector}
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: index * 0.15 + 0.3 }}
+                />
+              )}
+            </motion.div>
+          ))}
         </div>
       </section>
 
       {/* Testimonials Section */}
       <section className={styles.testimonials}>
-        <div className={styles.sectionHeader}>
+        <motion.div
+          className={styles.sectionHeader}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <h2 className={styles.sectionTitle}>Šta kažu naši klijenti</h2>
           <p className={styles.sectionSubtitle}>Pridružite se hiljadama zadovoljnih korisnika</p>
-        </div>
+        </motion.div>
 
         <div className={styles.testimonialsGrid}>
           {testimonials.map((testimonial, index) => (
-            <div
+            <motion.div
               key={index}
               className={styles.testimonialCard}
-              style={{ animationDelay: `${index * 0.1}s` }}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ y: -10, scale: 1.02 }}
             >
               <div className={styles.testimonialHeader}>
-                <div className={styles.testimonialAvatar}>{testimonial.image}</div>
-                <div>
+                <motion.img
+                  src={testimonial.avatar}
+                  alt={testimonial.name}
+                  className={styles.testimonialAvatar}
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                />
+                <div className={styles.testimonialInfo}>
                   <h4 className={styles.testimonialName}>{testimonial.name}</h4>
+                  <p className={styles.testimonialRole}>{testimonial.role}</p>
                   <div className={styles.rating}>
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <span key={i} className={styles.star}>⭐</span>
+                      <motion.span
+                        key={i}
+                        className={styles.star}
+                        initial={{ opacity: 0, scale: 0 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.1, duration: 0.3 }}
+                        whileHover={{ scale: 1.3, rotate: 15 }}
+                      >
+                        <IoMdStar />
+                      </motion.span>
                     ))}
                   </div>
                 </div>
               </div>
-              <p className={styles.testimonialComment}>{testimonial.comment}</p>
-            </div>
+              <p className={styles.testimonialComment}>"{testimonial.comment}"</p>
+              <div className={styles.testimonialDate}>{testimonial.date}</div>
+            </motion.div>
           ))}
         </div>
       </section>
 
       {/* Why Buy Section */}
       <section className={styles.whyBuy}>
-        <div className={styles.sectionHeader}>
+        <motion.div
+          className={styles.sectionHeader}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <h2 className={styles.sectionTitle}>Zašto kupiti kod nas?</h2>
           <p className={styles.sectionSubtitle}>Pružamo najkvalitetniju uslugu na tržištu</p>
-        </div>
+        </motion.div>
 
         <div className={styles.reasonsGrid}>
           {whyBuyReasons.map((reason, index) => (
-            <div
+            <motion.div
               key={index}
               className={styles.reasonCard}
-              style={{ animationDelay: `${index * 0.1}s` }}
+              initial={{ opacity: 0, y: 50, rotateY: -20 }}
+              whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              whileHover={{ y: -15, scale: 1.05, rotateY: 5 }}
             >
-              <div className={styles.reasonIcon}>{reason.icon}</div>
+              <motion.div
+                className={styles.reasonIcon}
+                style={{ color: reason.color }}
+                whileHover={{ scale: 1.3, rotate: 360 }}
+                transition={{ duration: 0.6 }}
+              >
+                {reason.icon}
+              </motion.div>
               <h3 className={styles.reasonTitle}>{reason.title}</h3>
               <p className={styles.reasonDescription}>{reason.description}</p>
-            </div>
+              <motion.div
+                className={styles.reasonGlow}
+                style={{ background: reason.color }}
+                whileHover={{ scale: 1.5, opacity: 0.3 }}
+              />
+            </motion.div>
           ))}
         </div>
       </section>
 
       {/* Why Sell Section */}
-      <section className={styles.whySell}>
-        <div className={styles.sectionHeader}>
+      <section className={styles.whySell} id="prodaj">
+        <motion.div
+          className={styles.sectionHeader}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <h2 className={styles.sectionTitle}>Zašto prodati sa tehnoKrug-om?</h2>
           <p className={styles.sectionSubtitle}>Brz, pouzdan i transparentan otkup telefona</p>
-        </div>
+        </motion.div>
 
         <div className={styles.reasonsGrid}>
           {whySellReasons.map((reason, index) => (
-            <div
+            <motion.div
               key={index}
               className={styles.reasonCard}
-              style={{ animationDelay: `${index * 0.1}s` }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ y: -15, scale: 1.05 }}
             >
-              <div className={styles.reasonIcon}>{reason.icon}</div>
+              <motion.div
+                className={styles.reasonIcon}
+                style={{ color: reason.color }}
+                whileHover={{ scale: 1.3, rotate: 360 }}
+                transition={{ duration: 0.6 }}
+              >
+                {reason.icon}
+              </motion.div>
               <h3 className={styles.reasonTitle}>{reason.title}</h3>
               <p className={styles.reasonDescription}>{reason.description}</p>
-            </div>
+              <motion.div
+                className={styles.reasonGlow}
+                style={{ background: reason.color }}
+                whileHover={{ scale: 1.5, opacity: 0.3 }}
+              />
+            </motion.div>
           ))}
         </div>
 
-        <p className={styles.disclaimer}>
+        <motion.p
+          className={styles.disclaimer}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >
           *Ukoliko uređaj odgovara opisu, ili ti vraćamo uređaj
-        </p>
+        </motion.p>
+      </section>
+
+      {/* CTA Section */}
+      <section className={styles.ctaSection}>
+        <motion.div
+          className={styles.ctaContent}
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <motion.h2
+            className={styles.ctaTitle}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            Spreman da počneš?
+          </motion.h2>
+          <motion.p
+            className={styles.ctaText}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            Pridruži se hiljadama zadovoljnih korisnika i pronađi svoj savršeni telefon danas!
+          </motion.p>
+          <motion.div
+            className={styles.ctaButtons}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <motion.button
+              className={`${styles.btn} ${styles.btnPrimary} ${styles.btnLarge}`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FiShoppingCart />
+              Pregledaj ponudu
+            </motion.button>
+            <motion.button
+              className={`${styles.btn} ${styles.btnOutline} ${styles.btnLarge}`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FiDollarSign />
+              Proceni telefon
+            </motion.button>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Footer */}
-      <footer className={styles.footer}>
+      <footer className={styles.footer} id="kontakt">
         <div className={styles.footerContent}>
-          <div className={styles.footerSection}>
+          <motion.div
+            className={styles.footerSection}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <h3 className={styles.footerLogo}>
-              <span className={styles.gradientText}>tehnoKrug</span>
+              <IoMdPhonePortrait className={styles.footerLogoIcon} />
+              <span>tehno<span className={styles.gradientText}>Krug</span></span>
             </h3>
             <p className={styles.footerDescription}>
               Tvoj pouzdan partner za kupovinu i prodaju telefona u Srbiji.
+              Kvalitet, sigurnost i transparentnost su naši prioriteti.
             </p>
-          </div>
+            <div className={styles.socialLinks}>
+              <motion.a
+                href="#"
+                className={styles.socialLink}
+                whileHover={{ scale: 1.2, y: -5 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                Facebook
+              </motion.a>
+              <motion.a
+                href="#"
+                className={styles.socialLink}
+                whileHover={{ scale: 1.2, y: -5 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                Instagram
+              </motion.a>
+              <motion.a
+                href="#"
+                className={styles.socialLink}
+                whileHover={{ scale: 1.2, y: -5 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                Twitter
+              </motion.a>
+            </div>
+          </motion.div>
 
-          <div className={styles.footerSection}>
+          <motion.div
+            className={styles.footerSection}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
             <h4>Kontakt</h4>
             <p>📧 info@tehnokrug.rs</p>
             <p>📞 +381 11 123 4567</p>
-            <p>📍 Beograd, Srbija</p>
-          </div>
+            <p>📱 +381 64 123 4567</p>
+            <p>📍 Knez Mihailova 15, Beograd</p>
+          </motion.div>
 
-          <div className={styles.footerSection}>
+          <motion.div
+            className={styles.footerSection}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             <h4>Radno vreme</h4>
-            <p>Ponedeljak - Petak: 09:00 - 20:00</p>
-            <p>Subota: 10:00 - 18:00</p>
-            <p>Nedelja: Zatvoreno</p>
-          </div>
+            <p><FiClock /> Ponedeljak - Petak</p>
+            <p>09:00 - 20:00</p>
+            <p><FiClock /> Subota</p>
+            <p>10:00 - 18:00</p>
+            <p><FiClock /> Nedelja: Zatvoreno</p>
+          </motion.div>
 
-          <div className={styles.footerSection}>
-            <h4>Pratite nas</h4>
-            <div className={styles.socialLinks}>
-              <a href="#" className={styles.socialLink}>Facebook</a>
-              <a href="#" className={styles.socialLink}>Instagram</a>
-              <a href="#" className={styles.socialLink}>Twitter</a>
-            </div>
-          </div>
+          <motion.div
+            className={styles.footerSection}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <h4>Brzi linkovi</h4>
+            <a href="#kupi" className={styles.footerLink}>Kupi telefon</a>
+            <a href="#prodaj" className={styles.footerLink}>Prodaj telefon</a>
+            <a href="#kako-radi" className={styles.footerLink}>Kako radi?</a>
+            <a href="#kontakt" className={styles.footerLink}>Kontakt</a>
+          </motion.div>
         </div>
 
-        <div className={styles.footerBottom}>
+        <motion.div
+          className={styles.footerBottom}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
           <p>&copy; 2024 tehnoKrug. Sva prava zadržana.</p>
-        </div>
+          <div className={styles.footerBottomLinks}>
+            <a href="#">Politika privatnosti</a>
+            <a href="#">Uslovi korišćenja</a>
+            <a href="#">Kolačići</a>
+          </div>
+        </motion.div>
       </footer>
+
+      {/* Scroll to top button */}
+      <motion.button
+        className={styles.scrollToTop}
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: scrollYProgress.get() > 0.2 ? 1 : 0, scale: scrollYProgress.get() > 0.2 ? 1 : 0 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        ↑
+      </motion.button>
     </div>
   );
 }
