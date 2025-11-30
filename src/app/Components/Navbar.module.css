@@ -1,24 +1,31 @@
+/* Navbar.module.css */
+
+/* Osiguraj da imaš font Orbitron importovan u globalnom CSS-u ili Layout-u */
+
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  z-index: 1000;
-  padding: 1.5rem 0;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  background: transparent;
+  width: 100%;
+  height: 90px;
+  z-index: 100;
+  transition: all 0.4s ease;
+  border-bottom: 1px solid transparent;
 }
 
+/* Scrolled State - Glassmorphism */
 .navbar.scrolled {
-  background: rgba(15, 15, 30, 0.95);
-  backdrop-filter: blur(20px);
-  padding: 1rem 0;
-  border-bottom: 1px solid rgba(102, 126, 234, 0.2);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  height: 70px; /* Malo se smanji kad skroluješ */
+  background: rgba(5, 5, 5, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
 
 .navContainer {
   max-width: 1400px;
+  height: 100%;
   margin: 0 auto;
   padding: 0 2rem;
   display: flex;
@@ -26,192 +33,291 @@
   justify-content: space-between;
 }
 
-.logo {
+/* ===== LOGO ===== */
+.logoLink {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 1.75rem;
-  font-weight: 800;
-  font-family: var(--font-poppins), sans-serif;
-  cursor: pointer;
-  color: #ffffff;
+  gap: 0.8rem;
+  text-decoration: none;
+  z-index: 101; /* Iznad menija ako zatreba */
 }
 
-.logoIcon {
-  font-size: 2.5rem;
-  color: #667eea;
-  filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.5));
+.logoIconWrapper {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00f2ff;
+  font-size: 1.2rem;
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.15);
 }
 
 .logoText {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
   letter-spacing: -0.5px;
 }
 
 .logoAccent {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #00f2ff;
 }
 
-.navLinks {
+/* ===== DESKTOP MENU ===== */
+.desktopMenu {
   display: flex;
-  align-items: center;
   gap: 2.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
 }
 
 .navLink {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  font-family: var(--font-inter), sans-serif;
-  color: #b8c1ec;
-  transition: all 0.3s ease;
   position: relative;
-  padding: 0.5rem 0;
-  cursor: pointer;
+  text-decoration: none;
+  color: #a0a0a0;
+  font-family: 'Inter', sans-serif; /* Tekstualni font */
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: color 0.3s;
+  padding: 0.2rem 0;
 }
 
-.navLink::after {
-  content: '';
+.linkUnderline {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 0;
+  width: 0%;
   height: 2px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background: #00f2ff;
+  box-shadow: 0 0 10px #00f2ff;
   transition: width 0.3s ease;
 }
 
 .navLink:hover {
-  color: #ffffff;
+  color: white;
 }
 
-.navLink:hover::after {
+.navLink:hover .linkUnderline {
   width: 100%;
 }
 
-.navLinkIcon {
-  font-size: 1.2rem;
-  color: #667eea;
-}
-
-.navCta {
+/* ===== ACTIONS & CTA ===== */
+.actionsWrapper {
   display: flex;
   align-items: center;
+  gap: 1.5rem;
 }
 
 .ctaButton {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.875rem 1.75rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
-  font-weight: 600;
-  font-family: var(--font-inter), sans-serif;
-  border-radius: 50px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-  cursor: pointer;
-  border: none;
-  font-size: 1rem;
-}
-
-.ctaButton:hover {
-  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
-  transform: translateY(-2px);
-}
-
-.ctaIcon {
-  font-size: 1.2rem;
-}
-
-.mobileMenuButton {
-  display: none;
-  font-size: 1.75rem;
-  color: #ffffff;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-}
-
-.mobileMenu {
-  display: none;
-  flex-direction: column;
-  background: rgba(15, 15, 30, 0.98);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(102, 126, 234, 0.2);
-  padding: 1rem 0;
+  gap: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  background: white;
+  color: black;
+  font-weight: 700;
+  font-family: 'Orbitron', sans-serif;
+  text-decoration: none;
+  /* Tech shape - odsečen ugao */
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   overflow: hidden;
 }
 
-.mobileNavLink {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem 2rem;
-  color: #b8c1ec;
-  font-weight: 500;
-  font-family: var(--font-inter), sans-serif;
-  transition: all 0.3s ease;
-  border-left: 3px solid transparent;
+.ctaIcon {
+  font-size: 1.1rem;
+}
+
+.ctaGlow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+  transform: skewX(-20deg);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  20% { left: 200%; }
+  100% { left: 200%; }
+}
+
+.menuToggle {
+  display: none; /* Sakriveno na desktopu */
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.8rem;
   cursor: pointer;
 }
 
-.mobileNavLink:hover {
-  background: rgba(102, 126, 234, 0.1);
-  color: #ffffff;
-  border-left-color: #667eea;
+/* ===== MOBILE MENU OVERLAY ===== */
+.mobileMenuOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #050505;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
 }
 
-.mobileCtaButton {
+/* Background grid identican kao na Hero.js */
+.menuGrid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(circle at center, black 40%, transparent 90%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mobileContent {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+}
+
+.mobileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4rem;
+}
+
+.closeBtn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: white;
+  font-size: 1.5rem;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin: 1rem 2rem;
-  padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
-  font-weight: 600;
-  font-family: var(--font-inter), sans-serif;
-  border-radius: 50px;
   justify-content: center;
   cursor: pointer;
+  transition: background 0.3s;
 }
 
-@media (max-width: 968px) {
-  .navLinks,
-  .navCta {
+.closeBtn:active {
+  background: #bd00ff;
+}
+
+.mobileLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.mobileLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.mobileLinkContent {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.mobileLinkNumber {
+  font-family: 'Orbitron', sans-serif;
+  color: #00f2ff;
+  font-size: 0.9rem;
+}
+
+.mobileLinkText {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: 'Orbitron', sans-serif; /* Brutalan tech font za linkove */
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  color: #cccccc;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.mobileLink:active .mobileLinkText {
+  color: white;
+  transform: translateX(10px);
+}
+
+.mobileArrow {
+  font-size: 1.5rem;
+  color: #333;
+  transition: color 0.3s;
+}
+
+.mobileLink:active .mobileArrow {
+  color: #00f2ff;
+}
+
+.mobileFooter {
+  margin-top: auto;
+  padding-top: 2rem;
+}
+
+.footerInfo p {
+  color: #666;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+
+.bigPhone {
+  display: block;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  color: white;
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+}
+
+.subText {
+  color: #444 !important;
+  text-transform: none;
+  letter-spacing: 0 !important;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .desktopMenu {
     display: none;
   }
+  
+  .ctaButton {
+    display: none; /* Sakrivamo veliki dugme na mobile, imamo ga u meniju */
+  }
 
-  .mobileMenuButton {
+  .menuToggle {
     display: block;
-  }
-
-  .mobileMenu {
-    display: flex;
-  }
-
-  .navContainer {
-    padding: 0 1.5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .logo {
-    font-size: 1.4rem;
-  }
-
-  .logoIcon {
-    font-size: 2rem;
-  }
-
-  .navContainer {
-    padding: 0 1rem;
   }
 }

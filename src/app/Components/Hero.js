@@ -1,153 +1,186 @@
 'use client';
 
+import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { FiShoppingCart, FiDollarSign, FiTruck } from 'react-icons/fi';
-import { IoMdPhonePortrait } from 'react-icons/io';
-import { BsShieldCheck } from 'react-icons/bs';
+import { FiArrowRight, FiSmartphone, FiDollarSign, FiCpu } from 'react-icons/fi';
 import styles from './Hero.module.css';
 
 export default function Hero() {
-  const { scrollYProgress } = useScroll();
+  const targetRef = useRef(null);
+  // Definiše opseg skrolovanja za targetRef: od početka elementa do kraja elementa
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["start start", "end start"]
+  });
 
-  // Parallax transforms
-  const parallaxY = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
-  const parallaxY2 = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
-  const parallaxY3 = useTransform(scrollYProgress, [0, 1], ['0%', '150%']);
+  // Parallax efekti za elemente (tekst ide gore, slika ide dole)
+  const yText = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const yImage = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  // Opacitet se smanjuje tokom prve polovine skrolovanja
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
+  // Varijante za pojavljivanje (Staggered fade-in)
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 50, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100, damping: 10 }
+    }
+  };
 
   return (
-    <section className={styles.hero} id="kupi">
-      <div className={styles.heroContent}>
-        <motion.div
-          className={styles.heroText}
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          <motion.span
-            className={styles.heroSubheading}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            Dobrodošli u budućnost kupovine telefona
-          </motion.span>
+    <section className={styles.heroSection} ref={targetRef}>
+      {/* --- Dynamic Background --- */}
+      <div className={styles.bgGrid}></div>
+      <motion.div
+        className={styles.bgGlow}
+        // Animacija pozadine za pulsirajući efekat
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
 
-          <motion.h1
-            className={styles.heroTitle}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            Najbolji <span className={styles.gradientText}>polovni telefoni</span> sa garancijom
+      <div className={styles.container}>
+        {/* --- Left Content (Tekst & Dugmad) --- */}
+        <motion.div
+          className={styles.contentWrapper}
+          // Primenjuje Parallax efekte na tekstualni sadržaj
+          style={{ y: yText, opacity }}
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div variants={itemVariants} className={styles.badge}>
+            <span className={styles.badgeDot}></span>
+            Lider u otkupu i prodaji
+          </motion.div>
+
+          <motion.h1 variants={itemVariants} className={styles.title}>
+            TVOJ STARI TELEFON <br />
+            <span className={styles.gradientText}>VREDI VIŠE.</span>
           </motion.h1>
 
-          <motion.p
-            className={styles.heroDescription}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-          >
-            Proveren kvalitet, 12 meseci garancije, besplatna dostava i povrat novca u 14 dana.
-            Tvoj pouzdan partner za kupovinu i prodaju telefona u Srbiji.
+          <motion.p variants={itemVariants} className={styles.description}>
+            Najbrži put do keša ili novog uređaja. Bez čekanja, bez komplikacija.
+            Direktna isplata i premium ponuda telefona na jednom mestu.
           </motion.p>
 
-          <motion.div
-            className={styles.heroButtons}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-          >
-            <motion.button
-              className={`${styles.btn} ${styles.btnPrimary}`}
-              whileHover={{ scale: 1.05, boxShadow: "0 20px 60px rgba(102, 126, 234, 0.4)" }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <FiShoppingCart />
-              Pretraži telefone
-            </motion.button>
+          <motion.div variants={itemVariants} className={styles.buttonGroup}>
+            <button className={styles.primaryBtn}>
+              <span>POGLEDAJ PONUDU</span>
+              <div className={styles.btnGlow}></div>
+            </button>
+            <button className={styles.secondaryBtn}>
+              <FiDollarSign className={styles.btnIcon} />
+              <span>PRODAJ UREĐAJ</span>
+            </button>
+          </motion.div>
 
-            <motion.button
-              className={`${styles.btn} ${styles.btnSecondary}`}
-              whileHover={{ scale: 1.05, boxShadow: "0 20px 60px rgba(240, 147, 251, 0.4)" }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <FiDollarSign />
-              Prodaj telefon
-            </motion.button>
+          {/* Stats Row */}
+          <motion.div variants={itemVariants} className={styles.statsRow}>
+            <div className={styles.statItem}>
+              <h3>15min</h3>
+              <p>Prosečna isplata</p>
+            </div>
+            <div className={styles.separator}></div>
+            <div className={styles.statItem}>
+              <h3>24/7</h3>
+              <p>Podrška</p>
+            </div>
+            <div className={styles.separator}></div>
+            <div className={styles.statItem}>
+              <h3>100%</h3>
+              <p>Sigurna kupovina</p>
+            </div>
           </motion.div>
         </motion.div>
 
+        {/* --- Right Visuals (3D Composition) --- */}
         <motion.div
-          className={styles.heroImage}
-          initial={{ opacity: 0, x: 50 }}
+          className={styles.visualWrapper}
+          // Primenjuje Parallax efekat na sliku
+          style={{ y: yImage }}
+          initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
+          transition={{ duration: 1, delay: 0.2 }}
         >
+          <div className={styles.circleBackdrop}></div>
+          
+          {/* Glavni Telefon (Floating Card Representation) */}
           <motion.div
-            className={styles.phoneShowcase}
+            className={styles.phoneCard}
+            // Lagano plutanje i rotacija (hover efekat)
             animate={{
-              y: [0, -20, 0],
+              y: [-15, 15, -15],
+              rotate: [0, 2, -2, 0]
             }}
             transition={{
-              duration: 4,
+              duration: 6,
               repeat: Infinity,
               ease: "easeInOut"
             }}
           >
-            <div className={styles.phone3d}>
-              <div className={styles.phoneScreen}>
-                <div className={styles.phoneNotch}></div>
-                <div className={styles.phoneContent}>
-                  <motion.div
-                    className={styles.phoneLogo}
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                  >
-                    <IoMdPhonePortrait />
-                  </motion.div>
+            {/* Ovi divovi simuliraju izgled modernog telefona, zameni sa <img> ako zelis pravu sliku */}
+            <div className={styles.phoneScreen}>
+              <div className={styles.screenHeader}>
+                <div className={styles.notch}></div>
+              </div>
+              <div className={styles.screenContent}>
+                <div className={styles.widget1}></div>
+                <div className={styles.widget2}></div>
+                <div className={styles.priceTag}>
+                  <span>iPhone 17 Pro</span>
+                  <strong>999€</strong>
                 </div>
               </div>
+              <div className={styles.reflection}></div>
             </div>
           </motion.div>
 
-          {/* Floating badges */}
+          {/* Floating Elements around phone */}
           <motion.div
-            className={styles.floatingBadge}
-            style={{ top: '10%', right: '10%' }}
-            animate={{ y: [0, -10, 0], rotate: [0, 5, 0] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          >
-            <BsShieldCheck />
-            <span>12 meseci garancije</span>
-          </motion.div>
-
-          <motion.div
-            className={styles.floatingBadge}
-            style={{ bottom: '20%', left: '5%' }}
-            animate={{ y: [0, -15, 0], rotate: [0, -5, 0] }}
+            className={`${styles.floatingIcon} ${styles.iconCpu}`}
+            animate={{ y: [0, -20, 0] }}
             transition={{ duration: 4, repeat: Infinity, delay: 1 }}
           >
-            <FiTruck />
-            <span>Besplatna dostava</span>
+            <FiCpu />
           </motion.div>
+
+          <motion.div
+            className={`${styles.floatingIcon} ${styles.iconMobile}`}
+            animate={{ y: [0, 30, 0] }}
+            transition={{ duration: 5, repeat: Infinity, delay: 0.5 }}
+          >
+            <FiSmartphone />
+          </motion.div>
+
         </motion.div>
       </div>
-
-      {/* Background elements */}
-      <div className={styles.heroBackground}>
-        <motion.div
-          className={styles.floatingShape}
-          style={{ y: parallaxY }}
-        />
-        <motion.div
-          className={styles.floatingShape}
-          style={{ y: parallaxY2 }}
-        />
-        <motion.div
-          className={styles.floatingShape}
-          style={{ y: parallaxY3 }}
-        />
-      </div>
+      
+      {/* Scroll Indicator */}
+      <motion.div
+        className={styles.scrollIndicator}
+        animate={{ y: [0, 10, 0] }}
+        transition={{ duration: 2, repeat: Infinity }}
+      >
+        <div className={styles.mouse}>
+          <div className={styles.wheel}></div>
+        </div>
+      </motion.div>
     </section>
   );
 }

@@ -1,4 +1,5 @@
 import { Inter, Poppins } from "next/font/google";
+import { Orbitron, Outfit } from 'next/font/google';
 import "./globals.css";
 
 const inter = Inter({
@@ -13,6 +14,9 @@ const poppins = Poppins({
   weight: ['300', '400', '500', '600', '700', '800', '900'],
   display: 'swap',
 });
+
+const orbitron = Orbitron({ subsets: ['latin'], variable: '--font-orbitron' });
+const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
 
 export const metadata = {
   title: "tehnoKrug - Kupovina i prodaja polovnih telefona | Najbolje cene u Srbiji",

@@ -6,11 +6,10 @@ import {
   FiRefreshCw,
   FiTruck,
   FiAward,
-  FiShield
+  FiShield,
+  FiArrowRight
 } from 'react-icons/fi';
-import {
-  IoMdCheckmarkCircle
-} from 'react-icons/io';
+import { IoMdCheckmarkCircle } from 'react-icons/io';
 import {
   BsLightningChargeFill,
   BsShieldCheck,
@@ -19,42 +18,62 @@ import {
 } from 'react-icons/bs';
 import styles from './KupitiProdati.module.css';
 
+// Varijante za animaciju kontejnera (da se kartice učitavaju jedna po jedna)
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15
+    }
+  }
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { type: "spring", stiffness: 50, damping: 15 }
+  }
+};
+
 export default function KupitiProdati() {
   const whyBuyReasons = [
     {
       icon: <FiCreditCard />,
       title: "Plaćanje na rate",
-      description: "Možeš da platiš na 3 do 12 rata ukoliko si Banca Intesa korisnik",
+      description: "Do 12 rata bez kamate za korisnike Banca Intesa kartica.",
       color: "#667eea"
     },
     {
       icon: <BsShieldCheck />,
-      title: "Garancija 12 meseci",
-      description: "Garantujemo 12 meseci na ceo uređaj sa punom podrškom",
+      title: "12 Meseci Garancije",
+      description: "Potpuna sigurnost. Pokrivamo sve kvarove na uređaju.",
       color: "#f093fb"
     },
     {
       icon: <FiRefreshCw />,
-      title: "Povrat novca u 14 dana",
-      description: "Vraćamo novac u 14 dana ukoliko se predomisliš, bez pitanja",
+      title: "14 Dana Povrat",
+      description: "Niste zadovoljni? Vraćamo novac bez suvišnih pitanja.",
       color: "#4facfe"
     },
     {
       icon: <IoMdCheckmarkCircle />,
-      title: "Proveren kvalitet",
-      description: "Detaljno provereni telefoni kroz 90+ profesionalnih testova",
+      title: "Strogo Testirano",
+      description: "Svaki uređaj prolazi kroz 90+ rigoroznih testova ispravnosti.",
       color: "#43e97b"
     },
     {
       icon: <FiTruck />,
-      title: "Besplatna dostava",
-      description: "Danas-za-sutra, besplatna i osigurana dostava širom Srbije",
+      title: "Brza Dostava",
+      description: "Danas za sutra. Besplatna i osigurana pošiljka na tvoju adresu.",
       color: "#fa709a"
     },
     {
       icon: <FiAward />,
-      title: "Originalna oprema",
-      description: "Svi telefoni dolaze sa originalnim punjačem i pakovanjem",
+      title: "Premium Oprema",
+      description: "Uz svaki telefon dobijaš originalni punjač i novo pakovanje.",
       color: "#feca57"
     }
   ];
@@ -62,129 +81,160 @@ export default function KupitiProdati() {
   const whySellReasons = [
     {
       icon: <BsLightningChargeFill />,
-      title: "Saznaj odmah cenu",
-      description: "Trenutna procena vrednosti tvog telefona bez čekanja",
-      color: "#f093fb"
+      title: "Instant Procena",
+      description: "Saznaj vrednost svog telefona za manje od 30 sekundi.",
+      color: "#ffd700"
     },
     {
       icon: <BsCashStack />,
-      title: "Isplata isti dan",
-      description: "Isplaćujemo novac isti dan nakon provere uređaja",
-      color: "#43e97b"
+      title: "Isplata Odmah",
+      description: "Novac leže na tvoj račun isti dan nakon provere uređaja.",
+      color: "#00f2ff"
     },
     {
       icon: <FiShield />,
-      title: "Garantovana isplata",
-      description: "Garantovana isplata dogovorene cene ako uređaj odgovara opisu*",
-      color: "#667eea"
+      title: "Sigurnost",
+      description: "Garantujemo dogovorenu cenu ako je uređaj kao u opisu.",
+      color: "#ff0080"
     },
     {
       icon: <BsBoxSeam />,
-      title: "Besplatno slanje",
-      description: "Brzo, besplatno, osigurano slanje ili dođi kod nas",
-      color: "#4facfe"
+      title: "Mi Plaćamo Poštarinu",
+      description: "Pošalji nam uređaj besplatno ili ga donesi lično.",
+      color: "#7928ca"
     }
   ];
 
   return (
-    <>
-      {/* Why Buy Section */}
-      <section className={styles.whyBuy}>
-        <motion.div
-          className={styles.sectionHeader}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className={styles.sectionTitle}>Zašto kupiti kod nas?</h2>
-          <p className={styles.sectionSubtitle}>Pružamo najkvalitetniju uslugu na tržištu</p>
-        </motion.div>
+    <div className={styles.wrapper}>
+      {/* Background Ambience */}
+      <div className={styles.ambientGlowTop}></div>
+      <div className={styles.ambientGlowBottom}></div>
 
-        <div className={styles.reasonsGrid}>
-          {whyBuyReasons.map((reason, index) => (
-            <motion.div
-              key={index}
-              className={styles.reasonCard}
-              initial={{ opacity: 0, y: 50, rotateY: -20 }}
-              whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -15, scale: 1.05, rotateY: 5 }}
-            >
-              <motion.div
-                className={styles.reasonIcon}
-                style={{ color: reason.color }}
-                whileHover={{ scale: 1.3, rotate: 360 }}
-                transition={{ duration: 0.6 }}
+      {/* ===== SECTION 1: KUPOVINA ===== */}
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <motion.div 
+            className={styles.header}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className={`${styles.badge} ${styles.badgeBlue}`}>
+              <span className={styles.badgeDot}></span>
+              KUPOVINA
+            </div>
+            <h2 className={styles.title}>
+              ZAŠTO KUPITI <br />
+              <span className={styles.gradientBlue}>KOD NAS?</span>
+            </h2>
+            <p className={styles.subtitle}>
+              Rizik kupovine polovnog telefona svodimo na nulu. 
+              Premium iskustvo kao da kupuješ nov uređaj.
+            </p>
+          </motion.div>
+
+          <motion.div 
+            className={styles.grid}
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            {whyBuyReasons.map((item, index) => (
+              <motion.div 
+                key={index} 
+                className={styles.card}
+                variants={cardVariants}
+                whileHover={{ y: -10, transition: { duration: 0.3 } }}
               >
-                {reason.icon}
+                <div className={styles.iconWrapper} style={{ boxShadow: `0 0 20px ${item.color}40` }}>
+                  <div className={styles.iconInner} style={{ color: item.color }}>
+                    {item.icon}
+                  </div>
+                </div>
+                <h3 className={styles.cardTitle}>{item.title}</h3>
+                <p className={styles.cardDesc}>{item.description}</p>
+                <div className={styles.cardBorder} />
               </motion.div>
-              <h3 className={styles.reasonTitle}>{reason.title}</h3>
-              <p className={styles.reasonDescription}>{reason.description}</p>
-              <motion.div
-                className={styles.reasonGlow}
-                style={{ background: reason.color }}
-                whileHover={{ scale: 1.5, opacity: 0.3 }}
-              />
-            </motion.div>
-          ))}
+            ))}
+          </motion.div>
         </div>
       </section>
 
-      {/* Why Sell Section */}
-      <section className={styles.whySell} id="prodaj">
-        <motion.div
-          className={styles.sectionHeader}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className={styles.sectionTitle}>Zašto prodati sa tehnoKrug-om?</h2>
-          <p className={styles.sectionSubtitle}>Brz, pouzdan i transparentan otkup telefona</p>
-        </motion.div>
+      {/* Divider */}
+      <div className={styles.divider}>
+        <div className={styles.dividerLine}></div>
+        <div className={styles.dividerIcon}><FiRefreshCw /></div>
+        <div className={styles.dividerLine}></div>
+      </div>
 
-        <div className={styles.reasonsGrid}>
-          {whySellReasons.map((reason, index) => (
-            <motion.div
-              key={index}
-              className={styles.reasonCard}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ y: -15, scale: 1.05 }}
-            >
-              <motion.div
-                className={styles.reasonIcon}
-                style={{ color: reason.color }}
-                whileHover={{ scale: 1.3, rotate: 360 }}
-                transition={{ duration: 0.6 }}
+      {/* ===== SECTION 2: PRODAJA ===== */}
+      <section className={styles.section} id="prodaj">
+        <div className={styles.container}>
+          <motion.div 
+            className={styles.header}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className={`${styles.badge} ${styles.badgeGreen}`}>
+              <span className={`${styles.badgeDot} ${styles.dotGreen}`}></span>
+              OTKUP UREĐAJA
+            </div>
+            <h2 className={styles.title}>
+              PRODAJ SVOJ TELEFON <br />
+              <span className={styles.gradientGreen}>BRZO & SIGURNO.</span>
+            </h2>
+            <p className={styles.subtitle}>
+              Bez cenkana, bez nalaženja sa kupcima po gradu. 
+              Mi smo tvoj siguran partner.
+            </p>
+          </motion.div>
+
+          <motion.div 
+            className={styles.grid}
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            {whySellReasons.map((item, index) => (
+              <motion.div 
+                key={index} 
+                className={styles.card}
+                variants={cardVariants}
+                whileHover={{ y: -10, transition: { duration: 0.3 } }}
               >
-                {reason.icon}
+                <div className={styles.iconWrapper} style={{ boxShadow: `0 0 20px ${item.color}40` }}>
+                  <div className={styles.iconInner} style={{ color: item.color }}>
+                    {item.icon}
+                  </div>
+                </div>
+                <h3 className={styles.cardTitle}>{item.title}</h3>
+                <p className={styles.cardDesc}>{item.description}</p>
+                
+                {/* Special accent for Sell cards */}
+                <div className={`${styles.cardBorder} ${styles.cardBorderGreen}`} />
               </motion.div>
-              <h3 className={styles.reasonTitle}>{reason.title}</h3>
-              <p className={styles.reasonDescription}>{reason.description}</p>
-              <motion.div
-                className={styles.reasonGlow}
-                style={{ background: reason.color }}
-                whileHover={{ scale: 1.5, opacity: 0.3 }}
-              />
-            </motion.div>
-          ))}
+            ))}
+          </motion.div>
+          
+          <motion.div 
+            className={styles.ctaWrapper}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            <button className={styles.ctaButton}>
+              Započni Procenu <FiArrowRight />
+            </button>
+            <p className={styles.disclaimer}>*Garantujemo isplatu ako uređaj odgovara opisu.</p>
+          </motion.div>
         </div>
-
-        <motion.p
-          className={styles.disclaimer}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-        >
-          *Ukoliko uređaj odgovara opisu, ili ti vraćamo uređaj
-        </motion.p>
       </section>
-    </>
+    </div>
   );
 }

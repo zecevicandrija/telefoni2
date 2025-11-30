@@ -1,146 +1,283 @@
-/* ===== CTA Section ===== */
 .ctaSection {
-  padding: 8rem 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.ctaContent {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(102, 126, 234, 0.3);
-  border-radius: 40px;
-  padding: 5rem 3rem;
-  text-align: center;
   position: relative;
-  overflow: hidden;
-}
-
-.ctaContent::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(45deg, transparent 30%, rgba(102, 126, 234, 0.1) 50%, transparent 70%);
-  animation: rotate 10s linear infinite;
-}
-
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.ctaTitle {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 800;
-  font-family: var(--font-poppins), sans-serif;
-  margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  position: relative;
-  z-index: 2;
-}
-
-.ctaText {
-  font-size: clamp(1.1rem, 2vw, 1.4rem);
-  color: #b8c1ec;
-  margin-bottom: 3rem;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-  z-index: 2;
-}
-
-.ctaButtons {
+  min-height: 80vh; /* Zauzima dosta visine za epski efekat */
   display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  position: relative;
-  z-index: 2;
-}
-
-.btn {
-  display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1.1rem 2.5rem;
-  border-radius: 50px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: var(--font-inter), sans-serif;
-  letter-spacing: 0.3px;
-  position: relative;
+  justify-content: center;
+  background-color: #050505;
   overflow: hidden;
+  padding: 4rem 2rem;
 }
 
-.btn::before {
-  content: '';
+/* ===== Ambient Backgrounds ===== */
+.ambientGlow {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
   transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(0, 198, 255, 0.15) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 1;
 }
 
-.btn:hover::before {
-  width: 300px;
-  height: 300px;
+.noiseOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 2;
 }
 
-.btnPrimary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* ===== Marquee Text (Background) ===== */
+.marqueeWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5vh 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.marqueeTrack {
+  display: flex;
+  white-space: nowrap;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 8rem;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.02);
+  user-select: none;
+}
+
+.trackBottom {
+  font-size: 6rem;
+  color: rgba(255, 255, 255, 0.015);
+  align-self: flex-end; /* Da ide uz donju ivicu, ali ne skroz */
+  margin-bottom: 10vh;
+}
+
+/* ===== Content Card ===== */
+.container {
+  position: relative;
+  z-index: 10;
+  max-width: 900px;
+  width: 100%;
+}
+
+.contentCard {
+  position: relative;
+  background: rgba(10, 10, 12, 0.6);
+  backdrop-filter: blur(20px);
+  padding: 4rem 3rem;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+/* Decorative Corners */
+.cornerTL, .cornerBR {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(0, 242, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.cornerTL {
+  top: 20px;
+  left: 20px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.cornerBR {
+  bottom: 20px;
+  right: 20px;
+  border-left: none;
+  border-top: none;
+}
+
+.contentCard:hover .cornerTL { top: 15px; left: 15px; }
+.contentCard:hover .cornerBR { bottom: 15px; right: 15px; }
+
+/* Typography */
+.title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 900;
+  line-height: 1.1;
   color: white;
-  box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+  margin-bottom: 1.5rem;
 }
 
-.btnOutline {
-  background: transparent;
-  border: 2px solid #667eea;
-  color: #667eea;
-  box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+.gradientText {
+  background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.btnOutline:hover {
-  background: rgba(102, 126, 234, 0.1);
-  border-color: #f093fb;
-  color: #f093fb;
-}
-
-.btnLarge {
-  padding: 1.25rem 3rem;
+.text {
   font-size: 1.2rem;
+  color: #a0a0a0;
+  margin-bottom: 3rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
 }
 
-/* ===== Responsive Design ===== */
+/* ===== Buttons ===== */
+.buttonGroup {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.primaryBtn {
+  position: relative;
+  padding: 1.2rem 3rem;
+  background: white;
+  color: black;
+  font-weight: 800;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+  transition: transform 0.2s;
+}
+
+.btnContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.primaryBtn:hover {
+  transform: scale(1.05);
+}
+
+.btnGlow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 198, 255, 0.5), transparent);
+  transform: skewX(-20deg);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  20% { left: 200%; }
+  100% { left: 200%; }
+}
+
+.secondaryBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.2rem 3rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.secondaryBtn:hover {
+  border-color: #00f2ff;
+  color: #00f2ff;
+  background: rgba(0, 242, 255, 0.05);
+}
+
+/* ===== Trust/Social Proof ===== */
+.trustRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatars {
+  display: flex;
+  align-items: center;
+}
+
+.avatars img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #1a1a1a;
+  margin-left: -10px;
+  transition: transform 0.3s;
+}
+
+.avatars img:first-child { margin-left: 0; }
+.avatars img:hover { transform: translateY(-5px); z-index: 10; }
+
+.avatarMore {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #2a2a2a;
+  color: white;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #1a1a1a;
+  margin-left: -10px;
+  font-weight: 600;
+}
+
+.trustText {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* ===== Responsive ===== */
 @media (max-width: 768px) {
-  .ctaSection {
-    padding: 5rem 1.5rem;
+  .contentCard {
+    padding: 3rem 1.5rem;
   }
-
-  .ctaContent {
-    padding: 3rem 2rem;
+  
+  .marqueeTrack {
+    font-size: 4rem;
   }
-
-  .btn {
-    padding: 1rem 2rem;
-    font-size: 1rem;
+  
+  .trackBottom {
+    font-size: 3rem;
   }
-
-  .btnLarge {
-    padding: 1.1rem 2.5rem;
-    font-size: 1.1rem;
+  
+  .buttonGroup {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .primaryBtn, .secondaryBtn {
+    width: 100%;
+    justify-content: center;
   }
 }

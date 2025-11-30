@@ -1,103 +1,333 @@
-/* ===== Stats Section ===== */
-.stats {
-  padding: 4rem 2rem;
-  max-width: 1400px;
-  margin: -4rem auto 0;
+/* Stats.module.css */
+
+.statsSection {
   position: relative;
-  z-index: 20;
+  padding: 100px 2rem;
+  background-color: #050505;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+/* Background elements */
+.bgGrid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(circle at center, black 40%, transparent 90%);
+  z-index: 0;
+}
+
+.glowOrb {
+  position: absolute;
+  top: 20%;
+  right: 10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(118, 75, 162, 0.15), transparent 70%);
+  filter: blur(80px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 5rem;
+}
+
+.pillBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  font-size: 0.8rem;
+  color: #00f2ff;
+  margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  color: white;
+  line-height: 1.1;
+}
+
+.gradientText {
+  background: linear-gradient(135deg, #00c6ff 0%, #bd00ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ===== TIMELINE & GRID LAYOUT ===== */
+
+.contentWrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.timelineContainer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 4px;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.timelineTrack {
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.timelineFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; /* Ovo kontrolise Framer Motion */
+  background: linear-gradient(180deg, #00f2ff, #bd00ff);
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
+  border-radius: 4px;
 }
 
 .statsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 8rem; /* Razmak za timeline */
+  row-gap: 4rem;
+  width: 100%;
 }
 
-.statCard {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 3rem 2rem;
-  text-align: center;
-  transition: all 0.4s ease;
-  cursor: pointer;
+.gridItem {
   position: relative;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
 }
 
-.statCard::before {
-  content: '';
+/* Podesavanje levo/desno u odnosu na timeline */
+.gridItem:nth-child(odd) {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.gridItem:nth-child(even) {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+/* Timeline Konektori (Tackice) */
+.timelineDot {
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  background: #050505;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  z-index: 5;
+}
+
+.gridItem:nth-child(odd) .timelineDot {
+  right: -4rem;
+  transform: translate(50%, -50%);
+}
+
+.gridItem:nth-child(even) .timelineDot {
+  left: -4rem;
+  transform: translate(-50%, -50%);
+}
+
+.dotInner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #00f2ff;
+  box-shadow: 0 0 10px #00f2ff;
+  transform: scale(0.6);
+}
+
+/* ===== CARD DESIGN (Phone Screen Look) ===== */
+
+.cardWrapper {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.statCardInner {
+  position: relative;
+  background: linear-gradient(160deg, #121214 0%, #0a0a0c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 30px;
+  padding: 2rem;
+  overflow: hidden;
+  box-shadow: 
+    0 20px 40px -10px rgba(0,0,0,0.5),
+    inset 0 0 0 1px rgba(255,255,255,0.05);
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Accent Borders */
+.blue { border-color: rgba(0, 198, 255, 0.3); }
+.purple { border-color: rgba(189, 0, 255, 0.3); }
+.cyan { border-color: rgba(0, 242, 255, 0.3); }
+
+/* Screen Elements */
+.screenHeader {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  opacity: 0.3;
+}
+
+.cameraDot { width: 8px; height: 8px; background: #333; border-radius: 50%; }
+.speakerSlot { width: 40px; height: 8px; background: #333; border-radius: 4px; }
+
+.homeIndicator {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.reflection {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,0.03) 50%, transparent 60%);
+  pointer-events: none;
 }
 
-.statCard:hover::before {
-  opacity: 1;
+/* Floating Widgets Animations */
+.widgetFloat2 {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  z-index: 0;
 }
 
-.statCard:hover {
-  border-color: rgba(102, 126, 234, 0.4);
-  box-shadow: 0 20px 60px rgba(102, 126, 234, 0.2);
+.widgetFloat2 {
+  bottom: 40px;
+  left: -20px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 242, 255, 0.05), transparent);
 }
 
-.statIcon {
-  font-size: 4rem;
-  color: #667eea;
+/* Content */
+.iconBox {
+  font-size: 2.5rem;
+  color: white;
   margin-bottom: 1.5rem;
-  display: inline-block;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.4));
 }
 
-.statNumber {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 800;
-  font-family: var(--font-poppins), sans-serif;
-  color: #ffffff;
+.statContent {
+  position: relative;
+  z-index: 2;
+}
+
+.numberWrapper {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1;
   margin-bottom: 0.5rem;
 }
 
-.statLabel {
+.label {
   font-size: 1.1rem;
-  color: #b8c1ec;
+  color: #ccc;
   font-weight: 500;
+  margin-bottom: 1rem;
 }
 
-/* ===== Responsive Design ===== */
+.miniStatsRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.gridItem:nth-child(odd) .miniStatsRow { justify-content: flex-end; }
+.gridItem:nth-child(even) .miniStatsRow { justify-content: flex-start; }
+
+.miniStat {
+  font-size: 0.8rem;
+  color: #666;
+  background: rgba(0,0,0,0.3);
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ===== RESPONSIVE ===== */
+
 @media (max-width: 768px) {
-  .stats {
-    padding: 3rem 1.5rem;
-  }
-
-  .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-  }
-
-  .statCard {
-    padding: 2rem 1.5rem;
-  }
-
-  .statIcon {
-    font-size: 3rem;
-  }
-
-  .statNumber {
-    font-size: 2.5rem;
-  }
-
-  .statLabel {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
   .statsGrid {
     grid-template-columns: 1fr;
+    column-gap: 0;
+    padding-left: 2rem; /* Mesto za timeline levo */
+  }
+
+  .timelineContainer {
+    left: 20px; /* Pomeri timeline skroz levo */
+    transform: none;
+  }
+
+  .gridItem {
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
+
+  .gridItem:nth-child(odd) .timelineDot,
+  .gridItem:nth-child(even) .timelineDot {
+    left: -2rem; /* Prilagodi tackice da budu na liniji levo */
+    right: auto;
+    transform: translate(-50%, -50%);
+  }
+
+  .gridItem:nth-child(odd) .miniStatsRow { justify-content: flex-start; }
+  
+  .sectionTitle {
+    font-size: 2rem;
   }
 }

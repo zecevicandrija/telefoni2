@@ -1,139 +1,270 @@
-/* ===== Why Buy/Sell Sections ===== */
-.whyBuy, .whySell {
-  padding: 8rem 2rem;
+/* ===== Main Wrappers ===== */
+.wrapper {
+  background-color: #050505;
+  position: relative;
+  overflow: hidden;
+}
+
+.section {
+  padding: 100px 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.container {
   max-width: 1400px;
   margin: 0 auto;
-  position: relative;
 }
 
-.whySell {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-  border-radius: 60px;
-  margin: 4rem auto;
+/* Ambient Backgrounds */
+.ambientGlowTop {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 800px;
+  background: radial-gradient(circle, rgba(0, 114, 255, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
 }
 
-.sectionHeader {
+.ambientGlowBottom {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 800px;
+  background: radial-gradient(circle, rgba(67, 233, 123, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ===== Typography & Headers ===== */
+.header {
   text-align: center;
-  margin-bottom: 5rem;
+  max-width: 800px;
+  margin: 0 auto 5rem auto;
 }
 
-.sectionTitle {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 800;
-  font-family: var(--font-poppins), sans-serif;
-  margin-bottom: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+.title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-weight: 900;
+  color: white;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #888;
+  line-height: 1.6;
+}
+
+/* Gradients */
+.gradientBlue {
+  background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.sectionSubtitle {
-  font-size: clamp(1.1rem, 2vw, 1.4rem);
-  color: #b8c1ec;
-  font-weight: 400;
+.gradientGreen {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.reasonsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2.5rem;
-}
-
-.reasonCard {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 3rem 2rem;
-  text-align: center;
-  transition: all 0.4s ease;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  perspective: 1000px;
-}
-
-.reasonCard:hover {
-  border-color: rgba(102, 126, 234, 0.4);
-  box-shadow: 0 30px 80px rgba(102, 126, 234, 0.3);
-}
-
-.reasonIcon {
-  font-size: 4.5rem;
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
   margin-bottom: 1.5rem;
-  display: inline-block;
-  position: relative;
-  z-index: 2;
+  backdrop-filter: blur(10px);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.reasonTitle {
-  font-size: 1.7rem;
-  font-weight: 700;
-  font-family: var(--font-poppins), sans-serif;
-  margin-bottom: 1rem;
-  color: #ffffff;
-  position: relative;
-  z-index: 2;
+.badgeBlue {
+  background: rgba(0, 114, 255, 0.1);
+  border: 1px solid rgba(0, 114, 255, 0.2);
+  color: #00c6ff;
 }
 
-.reasonDescription {
-  color: #b8c1ec;
-  line-height: 1.8;
-  font-size: 1.05rem;
-  position: relative;
-  z-index: 2;
+.badgeGreen {
+  background: rgba(67, 233, 123, 0.1);
+  border: 1px solid rgba(67, 233, 123, 0.2);
+  color: #43e97b;
 }
 
-.reasonGlow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 150px;
-  height: 150px;
+.badgeDot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0.1;
-  filter: blur(60px);
-  transition: all 0.4s ease;
-  z-index: 1;
+  background-color: currentColor;
+  box-shadow: 0 0 10px currentColor;
 }
 
-.reasonCard:hover .reasonGlow {
-  width: 300px;
-  height: 300px;
-  opacity: 0.15;
+/* ===== The Grid ===== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+/* ===== Card Design ===== */
+.card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Animated Border Gradient via Pseudo-element */
+.cardBorder {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00c6ff, transparent);
+  opacity: 0;
+  transform: scaleX(0);
+  transition: all 0.4s ease;
+}
+
+.cardBorderGreen {
+  background: linear-gradient(90deg, transparent, #43e97b, transparent);
+}
+
+.card:hover .cardBorder {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+/* Content */
+.iconWrapper {
+  width: 70px;
+  height: 70px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.card:hover .iconWrapper {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.iconInner {
+  font-size: 2rem;
+  filter: drop-shadow(0 0 5px currentColor);
+}
+
+.cardTitle {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.25rem;
+  color: white;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.cardDesc {
+  font-size: 0.95rem;
+  color: #aaa;
+  line-height: 1.6;
+}
+
+/* ===== Divider ===== */
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem 0;
+  opacity: 0.3;
+}
+
+.dividerLine {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, white, transparent);
+  width: 200px;
+}
+
+.dividerIcon {
+  font-size: 2rem;
+  color: white;
+  animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ===== CTA Area (Sell Section) ===== */
+.ctaWrapper {
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem 3rem;
+  background: white;
+  color: black;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 50px; /* Pill shape */
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ctaButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 30px rgba(67, 233, 123, 0.5);
 }
 
 .disclaimer {
-  text-align: center;
-  margin-top: 3rem;
-  color: #b8c1ec;
-  font-size: 0.95rem;
-  font-style: italic;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #666;
 }
 
-/* ===== Responsive Design ===== */
+/* ===== Responsive ===== */
 @media (max-width: 768px) {
-  .whyBuy,
-  .whySell {
-    padding: 5rem 1.5rem;
+  .section {
+    padding: 60px 1.5rem;
   }
-
-  .sectionTitle {
-    font-size: 2.5rem;
-  }
-
-  .sectionSubtitle {
-    font-size: 1.1rem;
-  }
-
-  .reasonsGrid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  .reasonCard {
+  
+  .card {
     padding: 2rem 1.5rem;
+  }
+  
+  .dividerLine {
+    width: 50px;
   }
 }

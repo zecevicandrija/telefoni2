@@ -1,131 +1,177 @@
 'use client';
 
-import { motion, useScroll } from 'framer-motion';
-import { FiClock } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { motion, useScroll, useAnimation, AnimatePresence } from 'framer-motion';
+import { FiClock, FiMapPin, FiMail, FiPhone, FiArrowUp, FiFacebook, FiInstagram, FiTwitter } from 'react-icons/fi';
 import { IoMdPhonePortrait } from 'react-icons/io';
 import styles from './Footer.module.css';
 
 export default function Footer() {
   const { scrollYProgress } = useScroll();
+  const [showScroll, setShowScroll] = useState(false);
+
+  // Logika za prikazivanje dugmeta "Nazad na vrh"
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on("change", (latest) => {
+      setShowScroll(latest > 0.1);
+    });
+    return () => unsubscribe();
+  }, [scrollYProgress]);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
-    <>
-      <footer className={styles.footer} id="kontakt">
-        <div className={styles.footerContent}>
-          <motion.div
-            className={styles.footerSection}
-            initial={{ opacity: 0, y: 30 }}
+    <footer className={styles.footer} id="kontakt">
+      {/* Decorative Top Border Gradient */}
+      <div className={styles.topBorder}></div>
+      <div className={styles.bgGrid}></div>
+
+      <div className={styles.container}>
+        <div className={styles.grid}>
+          
+          {/* --- Brand Section --- */}
+          <motion.div 
+            className={styles.brandColumn}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
           >
-            <h3 className={styles.footerLogo}>
-              <IoMdPhonePortrait className={styles.footerLogoIcon} />
-              <span>tehno<span className={styles.gradientText}>Krug</span></span>
-            </h3>
-            <p className={styles.footerDescription}>
-              Tvoj pouzdan partner za kupovinu i prodaju telefona u Srbiji.
-              Kvalitet, sigurnost i transparentnost su naši prioriteti.
+            <div className={styles.logoWrapper}>
+              <IoMdPhonePortrait className={styles.logoIcon} />
+              <span className={styles.logoText}>tehno<span className={styles.gradientText}>Krug</span></span>
+            </div>
+            <p className={styles.description}>
+              Premium destinacija za pametnu kupovinu i prodaju mobilnih uređaja. 
+              Sigurnost, brzina i kvalitet na jednom mestu.
             </p>
-            <div className={styles.socialLinks}>
-              <motion.a
-                href="#"
-                className={styles.socialLink}
-                whileHover={{ scale: 1.2, y: -5 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                Facebook
-              </motion.a>
-              <motion.a
-                href="#"
-                className={styles.socialLink}
-                whileHover={{ scale: 1.2, y: -5 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                Instagram
-              </motion.a>
-              <motion.a
-                href="#"
-                className={styles.socialLink}
-                whileHover={{ scale: 1.2, y: -5 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                Twitter
-              </motion.a>
+            
+            <div className={styles.socialRow}>
+              {['Facebook', 'Instagram', 'Twitter'].map((network, index) => (
+                <motion.a 
+                  key={network} 
+                  href="#" 
+                  className={styles.socialBtn}
+                  whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.1)", borderColor: "#fff" }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {network === 'Facebook' && <FiFacebook />}
+                  {network === 'Instagram' && <FiInstagram />}
+                  {network === 'Twitter' && <FiTwitter />}
+                </motion.a>
+              ))}
             </div>
           </motion.div>
 
-          <motion.div
-            className={styles.footerSection}
-            initial={{ opacity: 0, y: 30 }}
+          {/* --- Contact Info --- */}
+          <motion.div 
+            className={styles.column}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <h4>Kontakt</h4>
-            <p>📧 info@tehnokrug.rs</p>
-            <p>📞 +381 11 123 4567</p>
-            <p>📱 +381 64 123 4567</p>
-            <p>📍 Knez Mihailova 15, Beograd</p>
+            <h4 className={styles.columnTitle}>Kontakt</h4>
+            <ul className={styles.linkList}>
+              <li>
+                <FiMail className={styles.icon} />
+                <a href="mailto:info@tehnokrug.rs">info@tehnokrug.rs</a>
+              </li>
+              <li>
+                <FiPhone className={styles.icon} />
+                <span>+381 11 123 4567</span>
+              </li>
+              <li>
+                <FiPhone className={styles.icon} />
+                <span>+381 64 123 4567</span>
+              </li>
+              <li>
+                <FiMapPin className={styles.icon} />
+                <span>Knez Mihailova 15, BG</span>
+              </li>
+            </ul>
           </motion.div>
 
-          <motion.div
-            className={styles.footerSection}
-            initial={{ opacity: 0, y: 30 }}
+          {/* --- Working Hours --- */}
+          <motion.div 
+            className={styles.column}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <h4>Radno vreme</h4>
-            <p><FiClock /> Ponedeljak - Petak</p>
-            <p>09:00 - 20:00</p>
-            <p><FiClock /> Subota</p>
-            <p>10:00 - 18:00</p>
-            <p><FiClock /> Nedelja: Zatvoreno</p>
+            <h4 className={styles.columnTitle}>Radno Vreme</h4>
+            <ul className={styles.linkList}>
+              <li>
+                <FiClock className={styles.icon} />
+                <div className={styles.timeRow}>
+                  <span>Pon - Pet</span>
+                  <span className={styles.highlight}>09:00 - 20:00</span>
+                </div>
+              </li>
+              <li>
+                <FiClock className={styles.icon} />
+                <div className={styles.timeRow}>
+                  <span>Subota</span>
+                  <span className={styles.highlight}>10:00 - 18:00</span>
+                </div>
+              </li>
+              <li className={styles.closed}>
+                <FiClock className={styles.icon} />
+                <span>Nedelja: Zatvoreno</span>
+              </li>
+            </ul>
           </motion.div>
 
-          <motion.div
-            className={styles.footerSection}
-            initial={{ opacity: 0, y: 30 }}
+          {/* --- Quick Links --- */}
+          <motion.div 
+            className={styles.column}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <h4>Brzi linkovi</h4>
-            <a href="#kupi" className={styles.footerLink}>Kupi telefon</a>
-            <a href="#prodaj" className={styles.footerLink}>Prodaj telefon</a>
-            <a href="#kako-radi" className={styles.footerLink}>Kako radi?</a>
-            <a href="#kontakt" className={styles.footerLink}>Kontakt</a>
+            <h4 className={styles.columnTitle}>Meni</h4>
+            <div className={styles.navLinks}>
+              <a href="#kupi" className={styles.navLink}>Kupi Telefon</a>
+              <a href="#prodaj" className={styles.navLink}>Prodaj Telefon</a>
+              <a href="#kako-radi" className={styles.navLink}>Proces</a>
+              <a href="#faq" className={styles.navLink}>Česta pitanja</a>
+            </div>
           </motion.div>
         </div>
 
-        <motion.div
-          className={styles.footerBottom}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-          <p>&copy; 2024 tehnoKrug. Sva prava zadržana.</p>
-          <div className={styles.footerBottomLinks}>
-            <a href="#">Politika privatnosti</a>
-            <a href="#">Uslovi korišćenja</a>
+        {/* --- Bottom Bar --- */}
+        <div className={styles.footerBottom}>
+          <p>&copy; 2024 tehnoKrug. Designed for performance.</p>
+          <div className={styles.legalLinks}>
+            <a href="#">Privatnost</a>
+            <span className={styles.separator}>•</span>
+            <a href="#">Uslovi</a>
+            <span className={styles.separator}>•</span>
             <a href="#">Kolačići</a>
           </div>
-        </motion.div>
-      </footer>
+        </div>
+      </div>
 
-      {/* Scroll to top button */}
-      <motion.button
-        className={styles.scrollToTop}
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: scrollYProgress.get() > 0.2 ? 1 : 0, scale: scrollYProgress.get() > 0.2 ? 1 : 0 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-      >
-        ↑
-      </motion.button>
-    </>
+      {/* --- Scroll To Top Button --- */}
+      <AnimatePresence>
+        {showScroll && (
+          <motion.button
+            className={styles.scrollTopBtn}
+            onClick={scrollToTop}
+            initial={{ opacity: 0, scale: 0, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0, y: 20 }}
+            whileHover={{ scale: 1.1, boxShadow: "0 0 20px rgba(0, 242, 255, 0.5)" }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <FiArrowUp />
+          </motion.button>
+        )}
+      </AnimatePresence>
+    </footer>
   );
 }
