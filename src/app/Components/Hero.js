@@ -145,7 +145,7 @@ export default function Hero() {
                 <div className={styles.widget2}></div>
                 <div className={styles.priceTag}>
                   <span>iPhone 17 Pro</span>
-                  <strong>999€</strong>
+                  <strong>1299€</strong>
                 </div>
               </div>
               <div className={styles.reflection}></div>

@@ -133,6 +133,7 @@
   color: #cccccc;
   max-width: 500px;
   margin-bottom: 2.5rem;
+  font-family: var(--font-montserrat), sans-serif;
 }
 
 /* Buttons */
@@ -281,6 +282,8 @@
   will-change: transform; /* Govori browseru: "Ovo će se pomerati, pripremi GPU" */
   transform: translateZ(0); /* Hack za aktiviranje hardverske akceleracije */
   backface-visibility: hidden; /* Sprečava treperenje pri rotaciji */
+  pointer-events: none;
+  transition: none !important;
 }
 
 /* Simulacija ekrana */
