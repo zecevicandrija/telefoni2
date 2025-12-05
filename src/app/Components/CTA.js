@@ -56,7 +56,7 @@ export default function CTA() {
             transition={{ delay: 0.2 }}
           >
             VREME JE ZA <br />
-            <span className={styles.gradientText}>NADOGRADNJU.</span>
+            <span className={styles.gradientText}>NADOGRADNJU</span>
           </motion.h2>
 
           <motion.p

@@ -116,9 +116,9 @@
 /* Typography */
 .title {
   font-family: 'Orbitron', sans-serif;
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(2.2rem, 5vw, 4rem);
   font-weight: 900;
-  line-height: 1.1;
+  line-height: 1.3;
   color: white;
   margin-bottom: 1.5rem;
 }
@@ -131,7 +131,7 @@
 }
 
 .text {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: #a0a0a0;
   margin-bottom: 3rem;
   max-width: 600px;
@@ -253,7 +253,7 @@
 }
 
 .trustText {
-  color: #666;
+  color: #665;
   font-size: 0.9rem;
 }
 

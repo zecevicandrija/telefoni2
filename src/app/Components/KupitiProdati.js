@@ -63,18 +63,6 @@ export default function KupitiProdati() {
       title: "Strogo Testirano",
       description: "Svaki uređaj prolazi kroz 90+ rigoroznih testova ispravnosti.",
       color: "#43e97b"
-    },
-    {
-      icon: <FiTruck />,
-      title: "Brza Dostava",
-      description: "Danas za sutra. Besplatna i osigurana pošiljka na tvoju adresu.",
-      color: "#fa709a"
-    },
-    {
-      icon: <FiAward />,
-      title: "Premium Oprema",
-      description: "Uz svaki telefon dobijaš originalni punjač i novo pakovanje.",
-      color: "#feca57"
     }
   ];
 

@@ -145,7 +145,8 @@ export default function Footer() {
 
         {/* --- Bottom Bar --- */}
         <div className={styles.footerBottom}>
-          <p>&copy; 2024 tehnoKrug. Designed for performance.</p>
+          <p>&copy; 2025 tehnoKrug.</p>
+          <p>Dizajn i razvoj: <a href="https://zecevicdev.com" target="_blank">zecevicdev.com</a></p>
           <div className={styles.legalLinks}>
             <a href="#">Privatnost</a>
             <span className={styles.separator}>•</span>

@@ -5,7 +5,7 @@ import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiCheckCircle, FiShoppingCart, FiTruck, FiMapPin } from 'react-icons/fi';
 import styles from './KakoRadi.module.css';
 
-// --- 1. PREMIUM SCREEN ANIMATIONS (Novo) ---
+// --- 1. PREMIUM SCREEN ANIMATIONS (Telefon ekran - Ostaje isto) ---
 const ScreenContent = ({ step }) => {
   // SEARCH
   if (step.id === 1) {
@@ -100,7 +100,6 @@ function PhoneScreen({ activeStep, steps }) {
                 {currentStep.shortTitle}
             </h4>
             
-            {/* Ubacene Premium Animacije */}
             <ScreenContent step={currentStep} />
             
           </motion.div>
@@ -112,7 +111,7 @@ function PhoneScreen({ activeStep, steps }) {
   );
 }
 
-// --- TEXT CARD WITH TIMELINE ---
+// --- TEXT CARD (REDIZAJNIRANO) ---
 function TextCard({ step, index, activeStep, setActiveStep, isMobile, totalSteps, steps }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { margin: "-45% 0px -45% 0px" });
@@ -128,33 +127,30 @@ function TextCard({ step, index, activeStep, setActiveStep, isMobile, totalSteps
 
   return (
     <div className={styles.cardWrapper} ref={ref}>
-       {/* TIMELINE DEO (Levo od kartice) */}
+       {/* TIMELINE DEO */}
        <div className={styles.timelineCol}>
-          {/* Gornja linija (spaja sa prethodnim) */}
-          {index !== 0 && (
-              <div 
-                className={styles.timelineLine} 
-                style={{ background: isActive || isPast ? step.color : '#333' }}
-              />
-          )}
-          
-          {/* Tacka */}
-          <motion.div 
-            className={styles.timelineDot}
-            animate={{ 
-                scale: isActive ? 1.3 : 1,
-                backgroundColor: isActive || isPast ? step.color : '#222',
-                borderColor: isActive ? step.color : '#444'
-            }}
-          />
-          
-          {/* Donja linija (spaja sa sledecim) - Opciono, ili koristimo height container-a */}
-          {index !== totalSteps - 1 && (
+         {index !== 0 && (
+             <div 
+               className={styles.timelineLine} 
+               style={{ background: isActive || isPast ? step.color : '#333' }}
+             />
+         )}
+         
+         <motion.div 
+           className={styles.timelineDot}
+           animate={{ 
+               scale: isActive ? 1.3 : 1,
+               backgroundColor: isActive || isPast ? step.color : '#222',
+               borderColor: isActive ? step.color : '#444'
+           }}
+         />
+         
+         {index !== totalSteps - 1 && (
                <div 
                  className={styles.timelineLine} 
                  style={{ background: isPast ? steps[index + 1].color : '#333' }}
                />
-          )}
+         )}
        </div>
 
        {/* KARTICA */}
@@ -163,21 +159,29 @@ function TextCard({ step, index, activeStep, setActiveStep, isMobile, totalSteps
         initial={{ opacity: 0.2, x: 30 }}
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4 }}
+        onClick={() => isMobile && setActiveStep(index)}
       >
-        <div className={styles.cardHeader}>
-            <span className={styles.stepNumber} style={{ color: step.color }}>0{step.id}</span>
-            <div className={styles.stepTitleWrapper}>
+        {/* Veliki dekorativni broj u pozadini */}
+        <div className={styles.bigBgNumber} style={{ color: step.color }}>0{step.id}</div>
+
+        <div className={styles.cardContent}>
+            <div className={styles.cardHeader}>
+                {/* Ikonica u boxu */}
+                <div className={styles.iconBox} style={{ borderColor: step.color, color: step.color, boxShadow: isActive ? `0 0 15px ${step.color}40` : 'none' }}>
+                    <step.icon size={24} />
+                </div>
                 <h3 className={styles.stepTitle}>{step.title}</h3>
             </div>
+            
+            <p className={styles.stepDesc}>{step.description}</p>
         </div>
-        <p className={styles.stepDesc}>{step.description}</p>
         
         {/* Active Glow Border */}
         {isActive && (
             <motion.div 
                 layoutId="glowBorder" 
                 className={styles.glowBorder} 
-                style={{ borderColor: step.color, boxShadow: `0 0 20px ${step.color}20` }} 
+                style={{ borderColor: step.color, boxShadow: `0 0 20px ${step.color}10` }} 
             />
         )}
       </motion.div>
@@ -190,11 +194,12 @@ export default function KakoRadi() {
   const [activeStep, setActiveStep] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
+  // Dodate ikonice u niz
   const steps = [
-    { id: 1, title: "Izaberi Uređaj", shortTitle: "Pretraga", description: "Pregledaj našu ponudu verifikovanih telefona. Filtriraj po modelu, ceni i stanju.", color: "#00f2ff" },
-    { id: 2, title: "Proveri Detalje", shortTitle: "Specifikacije", description: "Svaki uređaj prolazi testiranje u 30 tačaka. Transparentno stanje i originalne slike.", color: "#bd00ff" },
-    { id: 3, title: "Poruči Sigurno", shortTitle: "Korpa", description: "Bezbedno plaćanje ili pouzećem. Dobijaš fiskalni račun i pisanu garanciju od 12 meseci.", color: "#00ff88" },
-    { id: 4, title: "Brza Dostava", shortTitle: "Na Putu", description: "Paket stiže na tvoju adresu u roku od 24h. Besplatna dostava za sve porudžbine.", color: "#ff0055" }
+    { id: 1, title: "Izaberi Uređaj", shortTitle: "Pretraga", description: "Pregledaj našu ponudu verifikovanih telefona. Filtriraj po modelu, ceni i stanju.", color: "#00f2ff", icon: FiSearch },
+    { id: 2, title: "Proveri Detalje", shortTitle: "Specifikacije", description: "Svaki uređaj prolazi testiranje u 30 tačaka. Transparentno stanje i originalne slike.", color: "#bd00ff", icon: FiCheckCircle },
+    { id: 3, title: "Poruči Sigurno", shortTitle: "Korpa", description: "Bezbedno plaćanje ili pouzećem. Dobijaš fiskalni račun i pisanu garanciju od 12 meseci.", color: "#00ff88", icon: FiShoppingCart },
+    { id: 4, title: "Brza Dostava", shortTitle: "Na Putu", description: "Paket stiže na tvoju adresu u roku od 24h. Besplatna dostava za sve porudžbine.", color: "#ff0055", icon: FiTruck }
   ];
 
   useEffect(() => {
@@ -212,8 +217,6 @@ export default function KakoRadi() {
     return () => clearInterval(interval);
   }, [isMobile, steps.length]);
 
-  // TVOJA LOGIKA ZA KRETANJE:
-  // Povecao sam malo multiplier (45vh) jer su kartice sada vece i lepse
   const phoneY = isMobile ? "0vh" : (activeStep) * 45 + "vh"; 
 
   return (
@@ -225,7 +228,7 @@ export default function KakoRadi() {
       </div>
 
       <div className={styles.contentRow}>
-        {/* Left Column: STICKY PHONE (Tvoja logika kretanja) */}
+        {/* Left Column: STICKY PHONE */}
         <div className={styles.stickyColumn}>
           <motion.div 
             className={styles.movingPhoneWrapper}
@@ -237,7 +240,6 @@ export default function KakoRadi() {
                 <PhoneScreen activeStep={activeStep} steps={steps} />
              </div>
              
-             {/* Glow iza telefona u boji koraka */}
              <motion.div 
                className={styles.blob}
                animate={{ 
@@ -249,7 +251,7 @@ export default function KakoRadi() {
           </motion.div>
         </div>
 
-        {/* Right Column: SCROLLABLE CARDS WITH TIMELINE */}
+        {/* Right Column: SCROLLABLE CARDS */}
         <div className={styles.scrollColumn}>
            <div className={styles.headerSpacer}>
               <h2 className={styles.mainTitle}>KAKO <span className={styles.gradientText}>RADI?</span></h2>
