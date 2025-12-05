@@ -237,8 +237,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  /* GPU optimizacija za container koji se pomera na scroll */
+  will-change: transform;
+  transform: translateZ(0);
 }
-
 .circleBackdrop {
   position: absolute;
   width: 400px;
@@ -261,13 +263,24 @@
   background: #000;
   border-radius: 40px;
   border: 2px solid rgba(100, 100, 100, 0.5);
+  
+  /* --- STARA SENKA (zamenjena optimizovanom) --- */
+  /* box-shadow je ubica performansi kada se element pomera. 
+     Umesto jedne ogromne senke, koristimo malo "tvrđu" ali bržu, 
+     ili forsiramo GPU da je ne iscrtava ponovo. */
   box-shadow:
     0 0 0 2px #111,
-    0 20px 50px -10px rgba(0, 0, 0, 0.5),
-    0 0 30px rgba(0, 242, 255, 0.2); /* Neon glow */
+    0 20px 40px -10px rgba(0, 0, 0, 0.6), /* Smanjen radius blura sa 50 na 40 */
+    0 0 20px rgba(0, 242, 255, 0.15); /* Smanjen glow radius */
+
   overflow: hidden;
   z-index: 10;
+  
+  /* --- CRUCIAL OPTIMIZATION (Ovo rešava seckanje) --- */
   transform-style: preserve-3d;
+  will-change: transform; /* Govori browseru: "Ovo će se pomerati, pripremi GPU" */
+  transform: translateZ(0); /* Hack za aktiviranje hardverske akceleracije */
+  backface-visibility: hidden; /* Sprečava treperenje pri rotaciji */
 }
 
 /* Simulacija ekrana */
@@ -350,6 +363,8 @@
   color: #00f2ff;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   z-index: 12;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .iconCpu { top: 20%; right: -20px; color: #bd00ff; border-color: rgba(189, 0, 255, 0.3); }
@@ -390,33 +405,106 @@
 
 /* ===== Responsive ===== */
 
+/* ===== Responsive Optimizations ===== */
+
+/* Tablet & Mobile Breakpoint */
 @media (max-width: 1024px) {
+  .heroSection {
+    /* Smanjen padding da sadržaj bude bliži vrhu na manjim ekranima */
+    padding: 100px 1.5rem 2rem 1.5rem;
+    min-height: auto; /* Sprečava nepotrebno razvlačenje */
+  }
+
   .container {
     grid-template-columns: 1fr;
     text-align: center;
-    gap: 3rem;
+    gap: 2.5rem;
   }
 
   .contentWrapper {
     align-items: center;
   }
 
-  .buttonGroup {
-    justify-content: center;
+  /* --- FIX: Poboljšanje vidljivosti pozadine na mobilnom --- */
+  .bgGrid {
+    /* Pojačavamo vidljivost linija sa 0.03 na 0.08 */
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 40px 40px; /* Malo gušća mreža za manji ekran */
+    /* Smanjujemo agresivnost maske da se ivice bolje vide */
+    mask-image: radial-gradient(circle at center, black 55%, transparent 100%);
+  }
+  
+  .bgGlow {
+    opacity: 0.6; /* Malo jači glow efekat */
+    width: 120vw; /* Širi glow */
   }
 
+  /* --- FIX: Tipografija --- */
+  .title {
+    font-size: 2.5rem; /* Smanjen naslov da ne lomi reči ružno */
+    margin-bottom: 1rem;
+  }
+
+  .description {
+    font-size: 0.95rem; /* Smanjen font sa 1.1rem */
+    line-height: 1.5; /* Malo zbijeniji redovi */
+    max-width: 100%;
+    padding: 0 1rem; /* Da tekst ne dodiruje ivice ekrana */
+    color: #b0b0b0; /* Malo svetlija siva za bolji kontrast na mobilnom */
+    margin-bottom: 2rem;
+  }
+
+  /* --- FIX: Dugmad (Vertical Stack) --- */
+  .buttonGroup {
+    flex-direction: column; /* Ređa dugmad jedno ispod drugog */
+    width: 100%;
+    max-width: 350px; /* Ograničava širinu da ne budu preširoka na tabletima */
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .primaryBtn, .secondaryBtn {
+    width: 100%; /* Dugme zauzima punu širinu kontejnera */
+    justify-content: center; /* Centrira sadržaj unutar dugmeta */
+    padding: 1rem; /* Udobniji touch target */
+  }
+
+  /* Stats Row prilagođavanje */
+  .statsRow {
+    width: 100%;
+    justify-content: center;
+    gap: 1.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .statItem h3 {
+    font-size: 1.2rem;
+  }
+
+  /* --- Visuals adjustment --- */
   .visualWrapper {
-    height: 400px;
-    margin-top: 2rem;
+    height: 380px; /* Malo kompaktnije */
+    margin-top: 1rem;
+    margin-bottom: 3rem; /* Prostor za scroll indikator */
+     will-change: transform;
+  transform: translateZ(0);
   }
 
   .phoneCard {
-    width: 240px;
-    height: 460px;
+    width: 220px; /* Malo uži telefon da stane lepo */
+    height: 440px;
+    /* Isključujemo preterano lebdenje na mobilnom ako smeta, ili ostavljamo */
+  }
+  
+  .floatingIcon {
+    transform: scale(0.8); /* Malo manje ikonioce oko telefona */
   }
 
-  .bgGlow {
-    width: 100vw;
-    height: 100vw;
+  /* Sakrivamo scroll mouse indikator na malim telefonima ako smeta */
+  .scrollIndicator {
+    bottom: 1rem;
+    transform: scale(0.8) translateX(-60%); /* Skaliranje + centriranje */
   }
 }

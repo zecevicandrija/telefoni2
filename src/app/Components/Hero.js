@@ -71,7 +71,7 @@ export default function Hero() {
 
           <motion.h1 variants={itemVariants} className={styles.title}>
             TVOJ STARI TELEFON <br />
-            <span className={styles.gradientText}>VREDI VIŠE.</span>
+            <span className={styles.gradientText}>VREDI VISE.</span>
           </motion.h1>
 
           <motion.p variants={itemVariants} className={styles.description}>
@@ -131,7 +131,8 @@ export default function Hero() {
             transition={{
               duration: 6,
               repeat: Infinity,
-              ease: "easeInOut"
+              ease: "easeInOut",
+              times: [0, 0.5, 1]
             }}
           >
             {/* Ovi divovi simuliraju izgled modernog telefona, zameni sa <img> ako zelis pravu sliku */}
