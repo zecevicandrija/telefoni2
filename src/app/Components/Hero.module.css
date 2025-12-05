@@ -446,12 +446,12 @@
 
   /* --- FIX: Tipografija --- */
   .title {
-    font-size: 2.5rem; /* Smanjen naslov da ne lomi reči ružno */
+    font-size: 3rem; /* Smanjen naslov da ne lomi reči ružno */
     margin-bottom: 1rem;
   }
 
   .description {
-    font-size: 0.95rem; /* Smanjen font sa 1.1rem */
+    font-size: 0.90rem; /* Smanjen font sa 1.1rem */
     line-height: 1.5; /* Malo zbijeniji redovi */
     max-width: 100%;
     padding: 0 1rem; /* Da tekst ne dodiruje ivice ekrana */
